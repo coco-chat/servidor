@@ -47,7 +47,7 @@ public class Conexion {
             JOptionPane.showMessageDialog(null, ex, "Error en la conexión a la base de datos: " + ex.getMessage(), JOptionPane.ERROR_MESSAGE);
             conexion = null;
         } finally {
-            JOptionPane.showMessageDialog(null, "Conexión Exitosa");
+            //JOptionPane.showMessageDialog(null, "Conexión Exitosa");
             return conexion;
          
         }
@@ -68,13 +68,14 @@ public class Conexion {
     }
     public void Comando(String consulta){
         MySQLConnect();
-        String Query = consulta;
+        String com = consulta;
         try{
             
         this.comando = this.conexion.createStatement();
+        this.comando.executeUpdate(com);
         
         } catch(Exception ex){
-            System.out.println("error");
+            System.out.println("error comando");
             
         }
     }

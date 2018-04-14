@@ -9,39 +9,44 @@ package chat;
  *
  * @author vanya
  */
-import chat.Controladores.ControladorUsuario;
+import chat.Controladores.Controlador_pet_amigos;
+import chat.Controladores.Controlador_pet_grupos;
+import chat.Controladores.Controlador_usuarios;
+import chat.Modelos.Modelo_pet_amigos;
+import chat.Modelos.Modelo_pet_grupos;
+import chat.Modelos.Modelo_usuarios;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import java.util.ArrayList;
+import java.util.List;
 public class Chat {
     
     public static void main(String[] args) {
         // TODO code application logic here
        
-        
+         /*Pruebas
          try {
-            ControladorUsuario x = new ControladorUsuario();
-            x.Select();
-            
-            /* Se establece el nombre de la base de datos que contiene 
-             la información que se quiere consultar
-             */
            
+             Controlador_pet_grupos x = new Controlador_pet_grupos();
+            Modelo_pet_grupos pet_grupo = new Modelo_pet_grupos();
+            List<Modelo_pet_grupos> grupos = new ArrayList<Modelo_pet_grupos>();
+            grupos = x.Select();
             
-             /* Se establece la consulta que se desea hacer.
-            Select se encargará de seleccionar todos los datos
-            (representado por *) desde (FROM) la base de datos
-            llamada "Registro"
-             */
+             System.out.println(grupos.get(0).getId()); 
+             System.out.println(grupos.get(0).getGrupo()); 
+             System.out.println(grupos.get(0).getUsuario()); 
+             
+              
+            pet_grupo.setId(1);
+              pet_grupo.setGrupo(1);
+              pet_grupo.setUsuario(1);
+              x.Insert(pet_grupo);
+           
           
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
     
 }

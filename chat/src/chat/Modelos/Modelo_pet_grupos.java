@@ -9,10 +9,10 @@ package chat.Modelos;
  *
  * @author vanya
  */
-public class ModeloUsuario {
+public class Modelo_pet_grupos {
     private int id;
-    private String username;
-    private String password;
+    private int grupo;
+    private int usuario;
 
     public int getId() {
         return id;
@@ -22,20 +22,20 @@ public class ModeloUsuario {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public int getGrupo() {
+        return grupo;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setGrupo(int grupo) {
+        this.grupo = grupo;
     }
 
-    public String getPassword() {
-        return password;
+    public int getUsuario() {
+        return usuario;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUsuario(int usuario) {
+        this.usuario = usuario;
     }
     
 }
