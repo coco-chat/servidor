@@ -20,9 +20,7 @@ public class Conexion {
     Connection conexion = null;
     Statement comando = null;
     ResultSet resultado;
-    /**
-     * @param args the command line arguments
-     */
+    
     public Connection MySQLConnect() {
  
         try {
