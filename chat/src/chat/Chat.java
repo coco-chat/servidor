@@ -26,28 +26,7 @@ import java.util.logging.Level;
 public class Chat {
     
     public static void main(String[] args) {
-        // TODO code application logic here
        
-        /*Pruebas
-        try {
-            
-            Controlador_integrantes x = new Controlador_integrantes();
-            Modelo_integrantes integrante = new Modelo_integrantes();
-            
-            integrante.setId(1);
-            integrante.setGrupo(2);
-            integrante.setUsuario(2);
-            x.Delete(integrante);
-            
-            List<Modelo_integrantes> listaIntegrantes = x.Select();
-            System.out.println(listaIntegrantes.get(0).getId());
-            System.out.println(listaIntegrantes.get(0).getGrupo()); 
-            System.out.println(listaIntegrantes.get(0).getUsuario());
-          
-        } catch (SQLException ex) {
-            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
-        
     }
     
 }
