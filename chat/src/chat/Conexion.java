@@ -17,9 +17,14 @@ import javax.swing.JOptionPane;
  * @author vanya
  */
 public class Conexion {
+    
     Connection conexion = null;
     Statement comando = null;
     ResultSet resultado;
+    
+    public Conexion() {
+        
+    }
     
     public Connection MySQLConnect() {
  

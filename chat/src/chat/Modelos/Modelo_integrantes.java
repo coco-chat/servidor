@@ -5,15 +5,21 @@
  */
 package chat.Modelos;
 
+import java.io.Serializable;
+
 /**
  *
  * @author juanc
  */
-public class Modelo_integrantes {
+public class Modelo_integrantes implements Serializable {
     
     private int id;
     private int grupo;
     private int usuario;
+    
+    public Modelo_integrantes() {
+        
+    }
     
     public void setId(int id) {
         this.id = id;

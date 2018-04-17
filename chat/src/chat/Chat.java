@@ -5,12 +5,10 @@
  */
 package chat;
 
-import chat.Controladores.Controlador_integrantes;
-import chat.Controladores.Controlador_integrantes;
-import chat.Controladores.Controlador_integrantes;
-import chat.Modelos.Modelo_integrantes;
-import chat.Modelos.Modelo_integrantes;
-import chat.Modelos.Modelo_integrantes;
+import chat.Controladores.Controlador_usuarios;
+import chat.Modelos.Modelo_usuarios;
+import chat.Controladores.Controlador_cuentas;
+import chat.Hashing.Hash;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -31,18 +29,20 @@ public class Chat {
         /*Pruebas
         try {
             
-            Controlador_integrantes x = new Controlador_integrantes();
-            Modelo_integrantes integrante = new Modelo_integrantes();
+            Controlador_usuarios x = new Controlador_usuarios();
+            Controlador_cuentas y = new Controlador_cuentas();
+            Modelo_usuarios usuario = new Modelo_usuarios();
             
-            integrante.setId(1);
-            integrante.setGrupo(2);
-            integrante.setUsuario(2);
-            x.Delete(integrante);
+            usuario.setUsername("Mamaste");
+            usuario.setPassword("pene");
             
-            List<Modelo_integrantes> listaIntegrantes = x.Select();
+            List<Modelo_usuarios> listaIntegrantes = x.Select();
             System.out.println(listaIntegrantes.get(0).getId());
-            System.out.println(listaIntegrantes.get(0).getGrupo()); 
-            System.out.println(listaIntegrantes.get(0).getUsuario());
+            System.out.println(listaIntegrantes.get(0).getUsername()); 
+            System.out.println(listaIntegrantes.get(0).getPassword());
+            
+            int res = y.Register(usuario.getUsername(), usuario.getPassword());
+            System.out.println(res);
           
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
