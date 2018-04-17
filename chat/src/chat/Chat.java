@@ -5,20 +5,12 @@
  */
 package chat;
 
-import chat.Controladores.Controlador_integrantes;
-import chat.Controladores.Controlador_integrantes;
-import chat.Controladores.Controlador_integrantes;
-import chat.Modelos.Modelo_integrantes;
-import chat.Modelos.Modelo_integrantes;
-import chat.Modelos.Modelo_integrantes;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-import java.util.logging.Level;
-
+import chat.Procesos.Hilo;
+import chat.Procesos.ConsoleInfo;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.HashMap;
 /**
  *
  * @author vanya
@@ -26,7 +18,25 @@ import java.util.logging.Level;
 public class Chat {
     
     public static void main(String[] args) {
-       
+        HashMap<Integer, Socket> socketPerUsuario = new HashMap();
+        Thread hilo;
+        Socket client;
+        int cont = 0;
+        
+        try {
+            ServerSocket socket = new ServerSocket(4567);
+            ConsoleInfo.especial("Esperando conexiones");
+            
+            while(true){
+                client = socket.accept();
+                hilo = new Thread(new Hilo(cont, client, socketPerUsuario));
+                hilo.start();
+                ConsoleInfo.especial("Hilo ["+cont+"] creado");
+                cont++;
+            }
+            
+        } catch (IOException ex) {
+            ConsoleInfo.error(cont,"Creacion de socket","Socket no creado");
+        }
     }
-    
 }
