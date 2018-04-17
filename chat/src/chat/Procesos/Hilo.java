@@ -10,9 +10,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
-import chat.Modelos.Modelo_Comunicacion;
-import chat.Modelos.Modelo_Comunicacion.MTypes;
-import com.google.gson.Gson;
 
 /**
  *
@@ -23,8 +20,8 @@ public class Hilo implements Runnable{
     private DataInputStream reader;
     private DataOutputStream writer;
     private int id;
-    HashMap<Integer, Socket> hashTable;
-    
+    private HashMap<Integer, Socket> hashTable;
+    private final ProcesoJson procesador = new ProcesoJson();
     
     public Hilo(int id, Socket client, HashMap<Integer, Socket> hashTable){
         this.client = client;
@@ -52,12 +49,14 @@ public class Hilo implements Runnable{
                         client.getLocalAddress().toString(),
                         data
                 );
-                final Gson gson = new Gson();
-                Modelo_Comunicacion mensaje = new Modelo_Comunicacion();
-                mensaje.setTipo(MTypes.ACK);
-                mensaje.setContenido("hola");
-                String result=gson.toJson(mensaje);
-                System.out.println(result);
+                data = procesador.procesar(data);
+                writer.writeUTF(data);
+                ConsoleInfo.accion(
+                        id, 
+                        "enviado", 
+                        client.getLocalAddress().toString(), 
+                        data
+                );
             } catch (IOException ex){
                 ConsoleInfo.error(this.id,"Leer","Conexión Finalizada");
                 break;
