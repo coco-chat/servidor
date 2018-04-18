@@ -26,7 +26,6 @@ public class Chat {
         try {
             ServerSocket socket = new ServerSocket(4567);
             ConsoleInfo.especial("Esperando conexiones");
-            
             while(true){
                 client = socket.accept();
                 hilo = new Thread(new Hilo(cont, client, socketPerUsuario));
@@ -38,5 +37,6 @@ public class Chat {
         } catch (IOException ex) {
             ConsoleInfo.error(cont,"Creacion de socket","Socket no creado");
         }
+
     }
 }

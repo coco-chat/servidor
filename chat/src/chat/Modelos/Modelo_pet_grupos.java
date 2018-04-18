@@ -5,14 +5,21 @@
  */
 package chat.Modelos;
 
+import java.io.Serializable;
+
 /**
  *
  * @author vanya
  */
-public class Modelo_pet_grupos {
+public class Modelo_pet_grupos implements Serializable {
+    
     private int id;
     private int grupo;
     private int usuario;
+    
+    public Modelo_pet_grupos() {
+        
+    }
 
     public int getId() {
         return id;

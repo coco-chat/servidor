@@ -5,17 +5,23 @@
  */
 package chat.Modelos;
 
+import java.io.Serializable;
+
 /**
  *
  * @author juanc
  */
-public class Modelo_amigos {
+public class Modelo_amigos implements Serializable {
     
     private int id;
     private int amigo1;
     private int amigo2;
     private String apodo1;
     private String apodo2;
+    
+    public Modelo_amigos() {
+        
+    }
     
     public void setId(int id) {
         this.id = id;
