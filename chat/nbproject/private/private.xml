@@ -3,15 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
-            <file>file:/F:/Tarea/Progra/Parcial%202/servidor/chat/src/chat/Chat.java</file>
-            <file>file:/F:/Tarea/Progra/Parcial%202/servidor/chat/src/chat/Procesos/ProcesoJson.java</file>
-            <file>file:/F:/Tarea/Progra/Parcial%202/servidor/chat/src/chat/Procesos/Hilo.java</file>
-            <file>file:/F:/Tarea/Progra/Parcial%202/servidor/chat/src/chat/Modelos/Modelo_Comunicacion.java</file>
+            <file>file:/F:/Tarea/Progra/Parcial%202/servidor/chat/src/chat/Controladores/Controlador_amigos.java</file>
             <file>file:/F:/Tarea/Progra/Parcial%202/servidor/chat/src/chat/Conexion.java</file>
-=======
-            <file>file:/C:/Users/juanc/Documents/GitHub/servidor/chat/src/chat/Controladores/Controlador_amigos.java</file>
->>>>>>> JDBC
         </group>
     </open-files>
 </project-private>

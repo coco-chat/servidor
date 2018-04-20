@@ -41,11 +41,11 @@ public class Controlador_cuentas {
                 if (listaResultados.size() == 1) {
                     if (listaResultados.get(0).getPassword()
                             .equals(Hash.sha1(password))) {
-                        return 200;
+                        return listaResultados.get(0).getId();
                     }
                 }
             }
-            return 404;
+            return -1;
         } catch(Exception ex) {
             System.out.println("error de server");
             return 0;
@@ -68,7 +68,7 @@ public class Controlador_cuentas {
                 List<Modelo_usuarios> listaUsuarios = c.Select();
                 for (Modelo_usuarios x : listaUsuarios) {
                     if (x.getUsername().equals(username)) {
-                        return 404;
+                        return 405;
                     }
                 }
                 Modelo_usuarios usuario = new Modelo_usuarios();

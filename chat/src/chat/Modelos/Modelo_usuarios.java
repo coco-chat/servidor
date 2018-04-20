@@ -18,7 +18,9 @@ public class Modelo_usuarios implements Serializable {
     private String password;
     
     public Modelo_usuarios() {
-        
+        id = 0;
+        username = "";
+        password = "";
     }
 
     public int getId() {

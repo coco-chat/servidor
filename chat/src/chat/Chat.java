@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class Chat {
     
     public static void main(String[] args) {
-        HashMap<Integer, Socket> socketPerUsuario = new HashMap();
+        HashMap<Hilo, Integer> hilos = new HashMap();
         Thread hilo;
         Socket client;
         int cont = 0;
@@ -28,7 +28,7 @@ public class Chat {
             ConsoleInfo.especial("Esperando conexiones");
             while(true){
                 client = socket.accept();
-                hilo = new Thread(new Hilo(cont, client, socketPerUsuario));
+                hilo = new Thread(new Hilo(cont, client, hilos));
                 hilo.start();
                 ConsoleInfo.especial("Hilo ["+cont+"] creado");
                 cont++;

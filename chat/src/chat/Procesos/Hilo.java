@@ -10,6 +10,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -20,14 +22,17 @@ public class Hilo implements Runnable{
     private DataInputStream reader;
     private DataOutputStream writer;
     private int id;
-    private HashMap<Integer, Socket> hashTable;
-    private final ProcesoJson procesador = new ProcesoJson();
+    private HashMap<Hilo, Integer> hashTable;
+    private ProcesoJson procesador;
+
+    public Hilo() {
+    }
     
-    public Hilo(int id, Socket client, HashMap<Integer, Socket> hashTable){
+    public Hilo(int id, Socket client, HashMap<Hilo, Integer> hashTable){
         this.client = client;
         this.id = id;
         this.hashTable = hashTable;
-        
+        procesador = new ProcesoJson(hashTable, this);
         try {
             reader = new DataInputStream(this.client.getInputStream());
             writer = new DataOutputStream(this.client.getOutputStream());
@@ -50,17 +55,39 @@ public class Hilo implements Runnable{
                         data
                 );
                 data = procesador.procesar(data);
-                writer.writeUTF(data);
                 ConsoleInfo.accion(
                         id, 
                         "enviado", 
                         client.getLocalAddress().toString(), 
                         data
                 );
+                writer.writeUTF(data);
             } catch (IOException ex){
                 ConsoleInfo.error(this.id,"Leer","Conexión Finalizada");
                 break;
             }
+        }
+    }
+    
+    public void closeSocket(){
+        try {
+            this.client.close();
+        } catch (IOException ex) {
+            ConsoleInfo.error(this.id, "Cerrar socket", "Socket no cerrado");
+        }
+    }
+    
+    public void enviarMensaje(String mensaje){
+        try {
+            ConsoleInfo.accion(
+                id, 
+                "enviado", 
+                client.getLocalAddress().toString(), 
+                mensaje
+            );
+            this.writer.writeUTF(mensaje);
+        } catch (IOException ex) {
+            ConsoleInfo.error(this.id,"Enviar datos","Mensaje no enviado");
         }
     }
     
