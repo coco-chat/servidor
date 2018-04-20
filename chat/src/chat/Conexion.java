@@ -17,12 +17,15 @@ import javax.swing.JOptionPane;
  * @author vanya
  */
 public class Conexion {
+    
     Connection conexion = null;
     Statement comando = null;
     ResultSet resultado;
-    /**
-     * @param args the command line arguments
-     */
+    
+    public Conexion() {
+        
+    }
+    
     public Connection MySQLConnect() {
  
         try {

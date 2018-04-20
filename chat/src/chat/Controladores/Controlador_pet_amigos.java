@@ -18,14 +18,17 @@ import javax.swing.JOptionPane;
  * @author vanya
  */
 public class Controlador_pet_amigos {
-    Conexion db = new Conexion();
-    String id;
-    int solicitante,solicitado;
     
-    public List<Modelo_pet_amigos> Select() throws SQLException{
+    Conexion db = new Conexion();
+    
+    public Controlador_pet_amigos() {
+        
+    }
+    
+    public List<Modelo_pet_amigos> Select(){
         try{
             Modelo_pet_amigos pet_amigo;
-            List<Modelo_pet_amigos> pet_amigos = new ArrayList<Modelo_pet_amigos>();
+            List<Modelo_pet_amigos> pet_amigos = new ArrayList<>();
            ResultSet x;
             x = db.Select("Select * from pet_amigos");
            
@@ -48,9 +51,9 @@ public class Controlador_pet_amigos {
     }
     public void Insert(Modelo_pet_amigos pet_amigo){
         try{
-          solicitante = pet_amigo.getSolicitante();
-          solicitado = pet_amigo.getSolicitado();
-          id =  Integer.toString(solicitante)+Integer.toString(solicitado);
+          int solicitante = pet_amigo.getSolicitante();
+          int solicitado = pet_amigo.getSolicitado();
+          String id =  Integer.toString(solicitante)+Integer.toString(solicitado);
           JOptionPane.showMessageDialog(null, id);
           String consulta = "Insert into pet_amigos values('"+id+"',"+solicitante+","+solicitado+")";
           db.Comando(consulta);
@@ -63,9 +66,9 @@ public class Controlador_pet_amigos {
     }
     public void Update(Modelo_pet_amigos pet_amigo){
         try{
-          id = pet_amigo.getId();
-          solicitante = pet_amigo.getSolicitante();
-          solicitado = pet_amigo.getSolicitado();
+          String id = pet_amigo.getId();
+          int solicitante = pet_amigo.getSolicitante();
+          int solicitado = pet_amigo.getSolicitado();
           String consulta = "UPDATE pet_amigos SET solicitante = "+solicitante+", solicitado = "+solicitado+" where id = "+id;
           db.Comando(consulta);
         
@@ -77,7 +80,7 @@ public class Controlador_pet_amigos {
     }
     public void Delete(Modelo_pet_amigos pet_amigo){
         try{
-          id = pet_amigo.getId();
+          String id = pet_amigo.getId();
           String consulta = "Delete from pet_amigos where id="+id;
           db.Comando(consulta);
         

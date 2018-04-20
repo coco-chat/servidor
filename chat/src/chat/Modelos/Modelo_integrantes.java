@@ -9,40 +9,40 @@ import java.io.Serializable;
 
 /**
  *
- * @author vanya
+ * @author juanc
  */
-public class Modelo_pet_grupos implements Serializable {
+public class Modelo_integrantes implements Serializable {
     
     private int id;
     private int grupo;
     private int usuario;
     
-    public Modelo_pet_grupos() {
+    public Modelo_integrantes() {
         
     }
-
-    public int getId() {
-        return id;
-    }
-
+    
     public void setId(int id) {
         this.id = id;
     }
-
-    public int getGrupo() {
-        return grupo;
+    
+    public int getId() {
+        return this.id;
     }
-
+    
     public void setGrupo(int grupo) {
         this.grupo = grupo;
     }
-
-    public int getUsuario() {
-        return usuario;
+    
+    public int getGrupo() {
+        return this.grupo;
     }
-
+    
     public void setUsuario(int usuario) {
         this.usuario = usuario;
+    }
+    
+    public int getUsuario() {
+        return this.usuario;
     }
     
 }

@@ -17,13 +17,17 @@ import java.util.List;
  * @author vanya
  */
 public class Controlador_pet_grupos {
-    Conexion db = new Conexion();
-    int id,grupo,usuario;
     
-    public List<Modelo_pet_grupos> Select() throws SQLException{
+    Conexion db = new Conexion();
+    
+    public Controlador_pet_grupos() {
+        
+    }
+    
+    public List<Modelo_pet_grupos> Select(){
         try{
             Modelo_pet_grupos pet_grupo;
-            List<Modelo_pet_grupos> pet_grupos = new ArrayList<Modelo_pet_grupos>();
+            List<Modelo_pet_grupos> pet_grupos = new ArrayList<>();
            ResultSet x;
             x = db.Select("Select * from pet_grupos");
            
@@ -46,8 +50,8 @@ public class Controlador_pet_grupos {
     }
     public void Insert(Modelo_pet_grupos pet_grupo){
         try{
-          grupo = pet_grupo.getGrupo();
-          usuario = pet_grupo.getUsuario();
+          int grupo = pet_grupo.getGrupo();
+          int usuario = pet_grupo.getUsuario();
           String consulta = "Insert into pet_grupos values(null,"+grupo+","+usuario+")";
           db.Comando(consulta);
         
@@ -59,9 +63,9 @@ public class Controlador_pet_grupos {
     }
     public void Update(Modelo_pet_grupos pet_grupo){
         try{
-          id = pet_grupo.getId();
-          grupo = pet_grupo.getGrupo();
-          usuario = pet_grupo.getUsuario();
+          int id = pet_grupo.getId();
+          int grupo = pet_grupo.getGrupo();
+          int usuario = pet_grupo.getUsuario();
           String consulta = "UPDATE pet_grupos SET grupo = "+grupo+", usuario = "+usuario+" where id = "+id;
           db.Comando(consulta);
         
@@ -73,7 +77,7 @@ public class Controlador_pet_grupos {
     }
     public void Delete(Modelo_pet_grupos pet_grupo){
         try{
-          id = pet_grupo.getId();
+          int id = pet_grupo.getId();
           String consulta = "Delete from pet_grupos where id="+id;
           db.Comando(consulta);
         

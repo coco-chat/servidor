@@ -18,14 +18,16 @@ import java.util.List;
  */
 public class Controlador_usuarios {
     Conexion db = new Conexion();
-    int id;
-    String username,password;
     
-    public List<Modelo_usuarios> Select() throws SQLException{
+    public Controlador_usuarios() {
+        
+    }
+    
+    public List<Modelo_usuarios> Select(){
         try{
             Modelo_usuarios usuario;
-            List<Modelo_usuarios> usuarios = new ArrayList<Modelo_usuarios>();
-           ResultSet x;
+            List<Modelo_usuarios> usuarios = new ArrayList<>();
+            ResultSet x;
             x = db.Select("Select * from usuarios");
            
             while (x.next()) {
@@ -47,8 +49,8 @@ public class Controlador_usuarios {
     }
     public void Insert(Modelo_usuarios usuario){
         try{
-          username = usuario.getUsername();
-          password = usuario.getPassword();
+          String username = usuario.getUsername();
+          String password = usuario.getPassword();
           String consulta = "Insert into usuarios values(null,'"+username+"',sha('"+password+"'))";
           db.Comando(consulta);
         
@@ -60,9 +62,9 @@ public class Controlador_usuarios {
     }
     public void Update(Modelo_usuarios usuario){
         try{
-          id = usuario.getId();
-          username = usuario.getUsername();
-          password = usuario.getPassword();
+          int id = usuario.getId();
+          String username = usuario.getUsername();
+          String password = usuario.getPassword();
           String consulta = "UPDATE usuarios SET username = '"+username+"', password = sha('"+password+"') where id = "+id;
           db.Comando(consulta);
         
@@ -74,7 +76,7 @@ public class Controlador_usuarios {
     }
     public void Delete(Modelo_usuarios usuario){
         try{
-          id = usuario.getId();
+          int id = usuario.getId();
           String consulta = "Delete from usuarios where id="+id;
           db.Comando(consulta);
         
