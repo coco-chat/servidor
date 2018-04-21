@@ -43,9 +43,13 @@ Error | Significado
 220 | registro exitoso y login exitoso
 230 | logout exitoso
 240 | solicitud de amigo enviada
+250 | solicitud de grupo enviada
 404 | comando no encontrado
 410 | error en el login
 420 | registro exitoso pero login fallido
 421 | se intentó registrar con nombre repetido
 422 | registro fallido
 440 | solicitud de amigo no enviada
+441 | solicitud de amigo ya registrada
+450 | solicitud de grupo no enviada
+451 | solicitud de grupo ya registrada
