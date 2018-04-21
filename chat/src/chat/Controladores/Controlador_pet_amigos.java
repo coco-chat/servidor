@@ -25,7 +25,7 @@ public class Controlador_pet_amigos {
         
     }
     
-    public List<Modelo_pet_amigos> Select() throws SQLException{
+    public List<Modelo_pet_amigos> Select(){
         try{
             Modelo_pet_amigos pet_amigo;
             List<Modelo_pet_amigos> pet_amigos = new ArrayList<>();

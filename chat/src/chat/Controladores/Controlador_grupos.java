@@ -20,7 +20,7 @@ public class Controlador_grupos {
     
     private Conexion db = new Conexion();
     
-    public List<Modelo_grupos> Select() throws SQLException {
+    public List<Modelo_grupos> Select(){
         try {
             Modelo_grupos grupo;
             List<Modelo_grupos> listaGrupos = new ArrayList<>();

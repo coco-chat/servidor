@@ -20,7 +20,7 @@ public class Controlador_integrantes {
     
     private Conexion db = new Conexion();
     
-    public List<Modelo_integrantes> Select() throws SQLException {
+    public List<Modelo_integrantes> Select(){
         try {
             Modelo_integrantes integrante;
             List<Modelo_integrantes> listaIntegrantes = new ArrayList<>();

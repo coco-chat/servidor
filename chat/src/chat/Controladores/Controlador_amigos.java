@@ -20,7 +20,7 @@ public class Controlador_amigos {
     
     private Conexion db = new Conexion();
     
-    public List<Modelo_amigos> Select() throws SQLException {
+    public List<Modelo_amigos> Select(){
         try {
             Modelo_amigos amigo;
             List<Modelo_amigos> listaAmigos = new ArrayList<>();

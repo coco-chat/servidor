@@ -23,7 +23,7 @@ public class Controlador_usuarios {
         
     }
     
-    public List<Modelo_usuarios> Select() throws SQLException{
+    public List<Modelo_usuarios> Select(){
         try{
             Modelo_usuarios usuario;
             List<Modelo_usuarios> usuarios = new ArrayList<>();
