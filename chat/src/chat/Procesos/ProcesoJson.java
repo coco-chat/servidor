@@ -84,6 +84,8 @@ public class ProcesoJson {
                 );
             case RQ_CONECTADOS:
                 return getConectados();
+            case RQ_DESCONECTADOS:
+                return getDesconectados();
             default:
                 return notFound();
         }
@@ -144,8 +146,8 @@ public class ProcesoJson {
             mensajeRemoto.setTipo(MTypes.SEND_MENSAJE);
             mensajeRemoto.setContenido(mensaje);
             destino.enviarMensaje(gson.toJson(mensajeRemoto));
-            mensajeSaliente.setContenido(250);
-        }else mensajeSaliente.setContenido(450);
+            mensajeSaliente.setContenido(260);
+        }else mensajeSaliente.setContenido(460);
         return gson.toJson(mensajeSaliente);
     }
     
@@ -206,5 +208,17 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
     
-    
+    public String getDesconectados(){
+        Controlador_usuarios usuarios = new Controlador_usuarios();
+        List<Modelo_usuarios> usuariosList = usuarios.Select();
+        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
+        mensajeSaliente.setTipo(MTypes.SEND_CONECTADOS);
+        for(Modelo_usuarios usuario: usuariosList){
+            if(isConectado(usuario.getId())!= null){
+                usuariosList.remove(usuario);
+            }
+        }
+        mensajeSaliente.setContenido(usuariosList);
+        return gson.toJson(mensajeSaliente);
+    }
 }
