@@ -23,17 +23,18 @@ Las siguientes partes son necesarias:
 - [ ] olvidar amigo
 - [ ] cambiar apodo amigo
 - [ ] agregar integrantes grupo
-- [ ] creargrupo + agregar integrantes grupo
+- [X] creargrupo + agregar integrantes grupo
 - [ ] eliminar integrante grupo (admin, o personal)
 - [X] pedir lista de usuarios conectados
 - [X] pedir lista de usuarios desconectados
 
 #### Envío de mensajes a clientes
 - [ ] reconocimiento de mensajes (validación)
-- [ ] aceptar o rechazar login
-- [ ] envio de mensaje
+- [X] aceptar o rechazar login
+- [X] envio de mensaje
+- [ ] mensajes de grupos
 - [ ] información grupo
-- [ ] usuarios activos
+- [X] usuarios activos
 
 
 #### Tabla de codigos de respuesta del servidor
@@ -45,6 +46,7 @@ Codigo | Significado
 240 | solicitud de amigo enviada
 250 | solicitud de grupo enviada
 260 | mensaje enviado
+270 | grupo creado
 404 | comando no encontrado
 410 | error en el login
 420 | registro exitoso pero login fallido
