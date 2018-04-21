@@ -63,7 +63,9 @@ public class Hilo implements Runnable{
                 );
                 writer.writeUTF(data);
             } catch (IOException ex){
-                hashTable.remove(this);
+                if(hashTable.get(this)!=null){
+                    procesador.logout();
+                }
                 ConsoleInfo.error(this.id,"Leer","Conexión Finalizada");
                 break;
             }

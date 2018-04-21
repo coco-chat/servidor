@@ -9,6 +9,7 @@ import chat.Controladores.Controlador_amigos;
 import chat.Modelos.Modelo_Comunicacion;
 import chat.Modelos.Modelo_Comunicacion.MTypes;
 import chat.Controladores.Controlador_cuentas;
+import chat.Controladores.Controlador_grupos;
 import com.google.gson.Gson;
 import chat.Modelos.Modelo_usuarios;
 import chat.Modelos.Modelo_pet_amigos;
@@ -18,6 +19,7 @@ import chat.Controladores.Controlador_usuarios;
 import java.net.Socket;
 import chat.Modelos.Modelo_Mensaje;
 import chat.Modelos.Modelo_amigos;
+import chat.Modelos.Modelo_nuevoGrupo;
 import chat.Modelos.Modelo_pet_grupos;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,11 +88,11 @@ public class ProcesoJson {
                 return getConectados();
             case RQ_DESCONECTADOS:
                 return getDesconectados();
-            case RQ_NMIEMBRO:
-                return agregarGrupo(
+            case RQ_GRUPO:
+                return crearGrupo(
                         gson.fromJson(
                             mensajeEntrante.getContenido().toString(),
-                            Modelo_usuarios.class
+                            Modelo_nuevoGrupo.class
                         )
                 );
             default:
@@ -187,8 +189,16 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
     
-    public String agregarGrupo(Modelo_usuarios usuario){
-        return "";
+    public String crearGrupo(Modelo_nuevoGrupo nuevoGrupo){
+        Controlador_grupos grupos = new Controlador_grupos();
+        Controlador_pet_grupos petGrupos = new Controlador_pet_grupos();
+        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
+        mensajeSaliente.setTipo(MTypes.ACK);
+        grupos.Insert(nuevoGrupo.getGrupo());
+        for(Modelo_pet_grupos pet: nuevoGrupo.getIntegrantes())
+            petGrupos.Insert(pet);
+        mensajeSaliente.setContenido(270);
+        return gson.toJson(mensajeSaliente);
     }
     
     public String aceptarAmigo(Modelo_usuarios usuario){
