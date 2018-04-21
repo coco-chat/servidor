@@ -5,85 +5,75 @@
  */
 package chat.Controladores;
 
-
 import chat.Conexion;
 import chat.Modelos.Modelo_usuarios;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  *
  * @author vanya
  */
 public class Controlador_usuarios {
+    
     Conexion db = new Conexion();
     
     public Controlador_usuarios() {
         
     }
     
-    public List<Modelo_usuarios> Select(){
+    public List<Modelo_usuarios> Select() {
         try{
             Modelo_usuarios usuario;
             List<Modelo_usuarios> usuarios = new ArrayList<>();
-            ResultSet x;
-            x = db.Select("Select * from usuarios");
-           
+            ResultSet x = db.ComandoSelect("SELECT * FROM usuarios");
             while (x.next()) {
-                
-              usuario = new Modelo_usuarios();
-              usuario.setId(x.getInt(1));
-              usuario.setUsername(x.getString(2));
-              usuario.setPassword(x.getString(3));
-                
-              usuarios.add(usuario);
+                usuario = new Modelo_usuarios();
+                usuario.setId(x.getInt(1));
+                usuario.setUsername(x.getString(2));
+                usuario.setPassword(x.getString(3));
+                usuarios.add(usuario);
             }
-            
-        return  usuarios;
-        }catch(SQLException ex){
-            System.out.println("error");
+            return  usuarios;
+        } catch(SQLException ex) {
             return null;
         }
-         
     }
-    public void Insert(Modelo_usuarios usuario){
-        try{
-          String username = usuario.getUsername();
-          String password = usuario.getPassword();
-          String consulta = "Insert into usuarios values(null,'"+username+"',sha('"+password+"'))";
-          db.Comando(consulta);
-        
-        
-        } catch(Exception ex){
-            System.out.println("error insert");
-            
+    
+    public int Insert(Modelo_usuarios usuario) {
+        try {
+            String username = usuario.getUsername();
+            String password = usuario.getPassword();
+            String consulta = "Insert into usuarios values(null,'" + username + 
+                    "',sha('" + password + "'))";
+            return db.ComandoInsertUpdateDelete(consulta);
+        } catch(Exception ex) {
+            return -1;
         }
     }
-    public void Update(Modelo_usuarios usuario){
-        try{
-          int id = usuario.getId();
-          String username = usuario.getUsername();
-          String password = usuario.getPassword();
-          String consulta = "UPDATE usuarios SET username = '"+username+"', password = sha('"+password+"') where id = "+id;
-          db.Comando(consulta);
-        
-        
-        } catch(Exception ex){
-            System.out.println("error");
-            
+    
+    public int Update(Modelo_usuarios usuario) {
+        try {
+            int id = usuario.getId();
+            String username = usuario.getUsername();
+            String password = usuario.getPassword();
+            String consulta = "UPDATE usuarios SET username = '" + username + 
+                    "', password = sha('" + password + "') WHERE id = " + id;
+            return db.ComandoInsertUpdateDelete(consulta);
+        } catch(Exception ex) {
+            return -1;            
         }
     }
-    public void Delete(Modelo_usuarios usuario){
-        try{
-          int id = usuario.getId();
-          String consulta = "Delete from usuarios where id="+id;
-          db.Comando(consulta);
-        
-        
-        } catch(Exception ex){
-            System.out.println("error");
-            
+    
+    public int Delete(Modelo_usuarios usuario) {
+        try {
+            int id = usuario.getId();
+            String consulta = "DELETE FROM usuarios WHERE id = " + id;
+            return db.ComandoInsertUpdateDelete(consulta);
+        } catch(Exception ex) {
+            return -1;
         }
     }
     

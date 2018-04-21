@@ -31,9 +31,8 @@ public class Hash {
             }
             return sb.toString();
         } catch (NoSuchAlgorithmException e) {
-            System.out.println(e.getMessage());
+            return null;
         }
-        return null;
     }
     
     /**

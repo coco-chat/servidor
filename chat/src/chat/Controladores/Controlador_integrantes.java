@@ -20,11 +20,15 @@ public class Controlador_integrantes {
     
     private Conexion db = new Conexion();
     
+    public Controlador_integrantes() {
+        
+    }
+    
     public List<Modelo_integrantes> Select(){
         try {
             Modelo_integrantes integrante;
             List<Modelo_integrantes> listaIntegrantes = new ArrayList<>();
-            ResultSet x = db.Select("SELECT * FROM integrantes");
+            ResultSet x = db.ComandoSelect("SELECT * FROM integrantes");
             while (x.next()) {
                 integrante = new Modelo_integrantes();
                 integrante.setId(x.getInt(1));
@@ -34,24 +38,23 @@ public class Controlador_integrantes {
             }
             return listaIntegrantes;
         } catch(SQLException ex) {
-            System.out.println("error select");
             return null;
         }
     }
     
-    public void Insert(Modelo_integrantes integrante) {
+    public int Insert(Modelo_integrantes integrante) {
         try {
             int grupo = integrante.getGrupo();
             int usuario = integrante.getUsuario();
             String consulta = "INSERT INTO integrantes (grupo, usuario) VALUES "
                     + "(" + grupo + ", " + usuario + ")";
-            db.Comando(consulta);
+            return db.ComandoInsertUpdateDelete(consulta);
         } catch(Exception ex) {
-            System.out.println("error insert");
+            return -1;
         }
     }
     
-    public void Update(Modelo_integrantes integrante) {
+    public int Update(Modelo_integrantes integrante) {
         try {
             int id = integrante.getId();
             int grupo = integrante.getGrupo();
@@ -60,19 +63,19 @@ public class Controlador_integrantes {
                     + "grupo = " + grupo + ", "
                     + "usuario = " + usuario
                     + " WHERE id = " + id;
-            db.Comando(consulta);
+            return db.ComandoInsertUpdateDelete(consulta);
         } catch(Exception ex) {
-            System.out.println("error update");
+            return -1;
         }
     }
     
-    public void Delete(Modelo_integrantes integrante){
+    public int Delete(Modelo_integrantes integrante){
         try {
             int id = integrante.getId();
             String consulta = "DELETE FROM integrantes WHERE id = " + id;
-            db.Comando(consulta);
+            return db.ComandoInsertUpdateDelete(consulta);
         } catch(Exception ex) {
-            System.out.println("error");
+            return -1;
         }
     }
     

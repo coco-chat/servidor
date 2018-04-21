@@ -19,6 +19,10 @@ public class Controlador_cuentas {
     
     private Conexion db = new Conexion();
     
+    public Controlador_cuentas() {
+        
+    }
+    
     /**
      * Método para verificar un login
      * @param username String, nombre de usuario
@@ -47,7 +51,6 @@ public class Controlador_cuentas {
             }
             return -1;
         } catch(Exception ex) {
-            System.out.println("error de server");
             return 0;
         }
         
@@ -79,7 +82,6 @@ public class Controlador_cuentas {
             }
             return 404;
         } catch(Exception ex) {
-            System.out.println("error de server");
             return 0;
         }
     }
