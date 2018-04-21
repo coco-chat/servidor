@@ -78,10 +78,6 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
     
-    public void removeSocket(){
-        hashTable.remove(this.client);
-    }
-    
     public String login(Modelo_usuarios usuario){
         Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
         Controlador_cuentas cuentas = new Controlador_cuentas();
@@ -124,9 +120,15 @@ public class ProcesoJson {
     
     public String mensaje(Modelo_Mensaje mensaje){
         Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
-        mensajeSaliente.setTipo(MTypes.ACK);
-        mensajeSaliente.setContenido(client);
-        return "";
+        Modelo_Comunicacion mensajeRemoto = new Modelo_Comunicacion();
+        Hilo destino = isConectado(mensaje.getDestino().getId());
+        if(destino!=null){
+            mensajeRemoto.setTipo(MTypes.SEND_MENSAJE);
+            mensajeRemoto.setContenido(mensaje);
+            destino.enviarMensaje(gson.toJson(mensajeRemoto));
+            mensajeSaliente.setContenido(250);
+        }else mensajeSaliente.setContenido(450);
+        return gson.toJson(mensajeSaliente);
     }
     
     public String logout(){
