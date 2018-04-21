@@ -20,11 +20,15 @@ public class Controlador_grupos {
     
     private Conexion db = new Conexion();
     
+    public Controlador_grupos() {
+        
+    }
+    
     public List<Modelo_grupos> Select(){
         try {
             Modelo_grupos grupo;
             List<Modelo_grupos> listaGrupos = new ArrayList<>();
-            ResultSet x = db.Select("SELECT * FROM grupos");
+            ResultSet x = db.ComandoSelect("SELECT * FROM grupos");
             while (x.next()) {
                 grupo = new Modelo_grupos();
                 grupo.setId(x.getInt(1));
@@ -34,24 +38,23 @@ public class Controlador_grupos {
             }
             return listaGrupos;
         } catch(SQLException ex) {
-            System.out.println("error select");
             return null;
         }
     }
     
-    public void Insert(Modelo_grupos grupo) {
+    public int Insert(Modelo_grupos grupo) {
         try {
             int admin = grupo.getAdmin();
             String nombre = grupo.getNombre();
             String consulta = "INSERT INTO grupos (admin, nombre) VALUES "
                     + "(" + admin + ", '" + nombre + "')";
-            db.Comando(consulta);
+            return db.ComandoInsertUpdateDelete(consulta);
         } catch(Exception ex) {
-            System.out.println("error insert");
+            return -1;
         }
     }
     
-    public void Update(Modelo_grupos grupo) {
+    public int Update(Modelo_grupos grupo) {
         try {
             int id = grupo.getId();
             int admin = grupo.getAdmin();
@@ -60,19 +63,19 @@ public class Controlador_grupos {
                     + "admin = " + admin + ", "
                     + "nombre = '" + nombre + "' "
                     + "WHERE id = " + id;
-            db.Comando(consulta);
+            return db.ComandoInsertUpdateDelete(consulta);
         } catch(Exception ex) {
-            System.out.println("error update");
+            return -1;
         }
     }
     
-    public void Delete(Modelo_grupos grupo){
+    public int Delete(Modelo_grupos grupo){
         try {
             int id = grupo.getId();
             String consulta = "DELETE FROM grupos WHERE id = " + id;
-            db.Comando(consulta);
+            return db.ComandoInsertUpdateDelete(consulta);
         } catch(Exception ex) {
-            System.out.println("error");
+            return -1;
         }
     }
     

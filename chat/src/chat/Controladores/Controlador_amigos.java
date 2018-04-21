@@ -16,15 +16,19 @@ import java.util.List;
  *
  * @author juanc
  */
-public class Controlador_amigos {
+public class Controlador_amigos extends Conexion {
     
     private Conexion db = new Conexion();
+    
+    public Controlador_amigos() {
+        
+    }
     
     public List<Modelo_amigos> Select(){
         try {
             Modelo_amigos amigo;
             List<Modelo_amigos> listaAmigos = new ArrayList<>();
-            ResultSet x = db.Select("SELECT * FROM amigos");
+            ResultSet x = db.ComandoSelect("SELECT * FROM amigos");
             while (x.next()) {
                 amigo = new Modelo_amigos();
                 amigo.setId(x.getInt(1));
@@ -36,12 +40,11 @@ public class Controlador_amigos {
             }
             return listaAmigos;
         } catch(SQLException ex) {
-            System.out.println("error select");
             return null;
         }
     }
     
-    public void Insert(Modelo_amigos amigo) {
+    public int Insert(Modelo_amigos amigo) {
         try {
             int amigo1 = amigo.getAmigo1();
             int amigo2 = amigo.getAmigo2();
@@ -50,13 +53,13 @@ public class Controlador_amigos {
             String consulta = "INSERT INTO amigos (amigo1, amigo2, apodo1, apodo2)"
                     + " VALUES (" + amigo1 + ", " + amigo2 + ", '" + apodo1 +
                     "', '" + apodo2 + "')";
-            db.Comando(consulta);
+            return db.ComandoInsertUpdateDelete(consulta);
         } catch(Exception ex) {
-            System.out.println("error insert");
+            return -1;
         }
     }
     
-    public void Update(Modelo_amigos amigo) {
+    public int Update(Modelo_amigos amigo) {
         try {
             int id = amigo.getId();
             int amigo1 = amigo.getAmigo1();
@@ -69,19 +72,19 @@ public class Controlador_amigos {
                     + "apodo1 = '" + apodo1 + "', "
                     + "apodo2 = '" + apodo2 + "' "
                     + "WHERE id = " + id;
-            db.Comando(consulta);
+            return db.ComandoInsertUpdateDelete(consulta);
         } catch(Exception ex) {
-            System.out.println("error update");
+            return -1;
         }
     }
     
-    public void Delete(Modelo_amigos amigo){
+    public int Delete(Modelo_amigos amigo){
         try {
             int id = amigo.getId();
             String consulta = "DELETE FROM amigos WHERE id = " + id;
-            db.Comando(consulta);
+            return db.ComandoInsertUpdateDelete(consulta);
         } catch(Exception ex) {
-            System.out.println("error");
+            return -1;
         }
     }
     

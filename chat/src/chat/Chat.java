@@ -33,8 +33,8 @@ public class Chat {
             Controlador_cuentas y = new Controlador_cuentas();
             Modelo_usuarios usuario = new Modelo_usuarios();
             
-            usuario.setUsername("Mamaste");
-            usuario.setPassword("pene");
+            usuario.setUsername("Ma");
+            usuario.setPassword("pe");
             
             List<Modelo_usuarios> listaIntegrantes = x.Select();
             System.out.println(listaIntegrantes.get(0).getId());
