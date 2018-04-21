@@ -86,6 +86,13 @@ public class ProcesoJson {
                 return getConectados();
             case RQ_DESCONECTADOS:
                 return getDesconectados();
+            case RQ_NMIEMBRO:
+                return agregarGrupo(
+                        gson.fromJson(
+                            mensajeEntrante.getContenido().toString(),
+                            Modelo_usuarios.class
+                        )
+                );
             default:
                 return notFound();
         }
@@ -155,8 +162,10 @@ public class ProcesoJson {
         hashTable.remove(this.client);
         client.closeSocket();
         Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
+        
         mensajeSaliente.setContenido(230);
         mensajeSaliente.setTipo(MTypes.ACK);
+        
         return gson.toJson(mensajeSaliente);
     }
     
@@ -164,12 +173,22 @@ public class ProcesoJson {
         Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
         Modelo_pet_amigos peticion = new Modelo_pet_amigos();
         Controlador_pet_amigos agregar = new Controlador_pet_amigos();
-        peticion.setSolicitado(usuario.getId());
-        peticion.setSolicitante(hashTable.get(client));
-        agregar.Insert(peticion);
-        mensajeSaliente.setContenido(240);
-        mensajeSaliente.setTipo(MTypes.ACK);
+        
+        if(agregar.verificarPeticion(hashTable.get(client), usuario.getId()) == 0) {
+            peticion.setSolicitado(usuario.getId());
+            peticion.setSolicitante(hashTable.get(client));
+            agregar.Insert(peticion);
+            mensajeSaliente.setContenido(240);
+            mensajeSaliente.setTipo(MTypes.ACK);
+        }else{
+            mensajeSaliente.setContenido(441);
+            mensajeSaliente.setTipo(MTypes.ACK);   
+        }
         return gson.toJson(mensajeSaliente);
+    }
+    
+    public String agregarGrupo(Modelo_usuarios usuario){
+        return "";
     }
     
     public String aceptarAmigo(Modelo_usuarios usuario){
