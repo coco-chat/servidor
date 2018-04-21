@@ -18,15 +18,15 @@ Las siguientes partes son necesarias:
 - [X] login
 - [X] registro usuario
 - [X] logout
-- [ ] recepción de mensaje
+- [X] recepción de mensaje
 - [X] solicitud amigo
 - [ ] olvidar amigo
 - [ ] cambiar apodo amigo
 - [ ] agregar integrantes grupo
 - [ ] creargrupo + agregar integrantes grupo
 - [ ] eliminar integrante grupo (admin, o personal)
-- [ ] pedir lista de usuarios conectados
-- [ ] pedir lista de usuarios desconectados
+- [X] pedir lista de usuarios conectados
+- [X] pedir lista de usuarios desconectados
 
 #### Envío de mensajes a clientes
 - [ ] reconocimiento de mensajes (validación)
@@ -36,14 +36,15 @@ Las siguientes partes son necesarias:
 - [ ] usuarios activos
 
 
-#### Tabla de errores
-Error | Significado
+#### Tabla de codigos de respuesta del servidor
+Codigo | Significado
 ------|------------
 210 | login exitoso
 220 | registro exitoso y login exitoso
 230 | logout exitoso
 240 | solicitud de amigo enviada
 250 | solicitud de grupo enviada
+260 | mensaje enviado
 404 | comando no encontrado
 410 | error en el login
 420 | registro exitoso pero login fallido
@@ -53,3 +54,4 @@ Error | Significado
 441 | solicitud de amigo ya registrada
 450 | solicitud de grupo no enviada
 451 | solicitud de grupo ya registrada
+460 | mensaje no enviado
