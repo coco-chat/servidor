@@ -15,17 +15,18 @@ Las siguientes partes son necesarias:
 
 ## Tipos de mensajes
 #### Mesnajes Recibidos en el Server
-- [ ] login
-- [ ] registro usuario
-- [ ] logout
-- [ ] actualización info user ???
+- [X] login
+- [X] registro usuario
+- [X] logout
 - [ ] recepción de mensaje
-- [ ] solicitud amigo
+- [X] solicitud amigo
 - [ ] olvidar amigo
 - [ ] cambiar apodo amigo
 - [ ] agregar integrantes grupo
 - [ ] creargrupo + agregar integrantes grupo
 - [ ] eliminar integrante grupo (admin, o personal)
+- [ ] pedir lista de usuarios conectados
+- [ ] pedir lista de usuarios desconectados
 
 #### Envío de mensajes a clientes
 - [ ] reconocimiento de mensajes (validación)
@@ -33,3 +34,18 @@ Las siguientes partes son necesarias:
 - [ ] envio de mensaje
 - [ ] información grupo
 - [ ] usuarios activos
+
+
+#### Tabla de errores
+Error | Significado
+------|------------
+210 | login exitoso
+220 | registro exitoso y login exitoso
+230 | logout exitoso
+240 | solicitud de amigo enviada
+404 | comando no encontrado
+410 | error en el login
+420 | registro exitoso pero login fallido
+421 | se intentó registrar con nombre repetido
+422 | registro fallido
+440 | solicitud de amigo no enviada
