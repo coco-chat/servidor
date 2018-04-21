@@ -19,7 +19,9 @@ import java.net.Socket;
 import chat.Modelos.Modelo_Mensaje;
 import chat.Modelos.Modelo_amigos;
 import chat.Modelos.Modelo_pet_grupos;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -80,6 +82,8 @@ public class ProcesoJson {
                             Modelo_usuarios.class
                         )
                 );
+            case RQ_CONECTADOS:
+                return getConectados();
             default:
                 return notFound();
         }
@@ -188,6 +192,19 @@ public class ProcesoJson {
         return null;
     }
     
+    public String getConectados(){
+        Controlador_usuarios usuarios = new Controlador_usuarios();
+        List<Modelo_usuarios> usuariosList = usuarios.Select();
+        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
+        mensajeSaliente.setTipo(MTypes.SEND_CONECTADOS);
+        for(Modelo_usuarios usuario: usuariosList){
+            if(isConectado(usuario.getId())== null){
+                usuariosList.remove(usuario);
+            }
+        }
+        mensajeSaliente.setContenido(usuariosList);
+        return gson.toJson(mensajeSaliente);
+    }
     
     
 }

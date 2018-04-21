@@ -5,11 +5,13 @@
  */
 package chat.Modelos;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Kevin Alan Martinez Virgen 14300260 8B1
  */
-public class Modelo_Mensaje {
+public class Modelo_Mensaje implements Serializable{
     private Modelo_usuarios origen;
     private Modelo_usuarios destino;
     private String contenido;

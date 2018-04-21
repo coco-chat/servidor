@@ -5,11 +5,13 @@
  */
 package chat.Modelos;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Kevin Alan Martinez Virgen 14300260 8B1
  */
-public class Modelo_Comunicacion {
+public class Modelo_Comunicacion implements Serializable{
     
     public static enum MTypes{
         RQ_LOGIN,RQ_REG, RQ_LOGOUT,
@@ -17,6 +19,7 @@ public class Modelo_Comunicacion {
         RQ_NAMIGO, RQ_DAMIGO, RQ_AAMIGO,
         RQ_APODO, RQ_GRUPO, RQ_CGRUPO,
         RQ_NMIEMBRO, RQ_DMIEMBRO,
+        RQ_CONECTADOS, RQ_DESCONECTADOS,
         ACK, ACK_LOGIN,
         SEND_MENSAJE, SEND_GRUPO, SEND_CONECTADOS, SEND_DESCONECTADOS
     };
