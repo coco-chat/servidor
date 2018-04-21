@@ -5,6 +5,7 @@
  */
 package chat.Procesos;
 
+import chat.Controladores.Controlador_amigos;
 import chat.Modelos.Modelo_Comunicacion;
 import chat.Modelos.Modelo_Comunicacion.MTypes;
 import chat.Controladores.Controlador_cuentas;
@@ -12,9 +13,12 @@ import com.google.gson.Gson;
 import chat.Modelos.Modelo_usuarios;
 import chat.Modelos.Modelo_pet_amigos;
 import chat.Controladores.Controlador_pet_amigos;
+import chat.Controladores.Controlador_pet_grupos;
 import chat.Controladores.Controlador_usuarios;
 import java.net.Socket;
 import chat.Modelos.Modelo_Mensaje;
+import chat.Modelos.Modelo_amigos;
+import chat.Modelos.Modelo_pet_grupos;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,7 +68,17 @@ public class ProcesoJson {
                 return agregarAmigo(
                         gson.fromJson(
                             mensajeEntrante.getContenido().toString(),
-                            Modelo_usuarios.class)
+                            Modelo_usuarios.class
+                        )
+                );
+            case RQ_LOGOUT:
+                return logout();
+            case RQ_AAMIGO:
+                return aceptarAmigo(
+                        gson.fromJson(
+                            mensajeEntrante.getContenido().toString(),
+                            Modelo_usuarios.class
+                        )
                 );
             default:
                 return notFound();
@@ -141,16 +155,28 @@ public class ProcesoJson {
     public String agregarAmigo(Modelo_usuarios usuario){
         Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
         Modelo_pet_amigos peticion = new Modelo_pet_amigos();
-        Controlador_pet_amigos cuenta = new Controlador_pet_amigos();
+        Controlador_pet_amigos agregar = new Controlador_pet_amigos();
         peticion.setSolicitado(usuario.getId());
         peticion.setSolicitante(hashTable.get(client));
-        cuenta.Insert(peticion);
+        agregar.Insert(peticion);
         mensajeSaliente.setContenido(240);
         mensajeSaliente.setTipo(MTypes.ACK);
         return gson.toJson(mensajeSaliente);
     }
+    
+    public String aceptarAmigo(Modelo_usuarios usuario){
+        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
+        Modelo_amigos peticion = new Modelo_amigos();
+        Controlador_amigos aceptar = new Controlador_amigos();
+        peticion.setAmigo1(usuario.getId());
+        peticion.setAmigo2(hashTable.get(client));
+        aceptar.Insert(peticion);
+        mensajeSaliente.setContenido(250);
+        mensajeSaliente.setTipo(MTypes.ACK);
+        return gson.toJson(mensajeSaliente);
+    }
 
- public Hilo isConectado(int id){
+    public Hilo isConectado(int id){
         for(Object val : hashTable.entrySet()){
             Map.Entry entry = (Map.Entry) val;
             if((int)entry.getValue() == id){
@@ -159,4 +185,7 @@ public class ProcesoJson {
         }
         return null;
     }
+    
+    
+    
 }
