@@ -10,10 +10,13 @@ import chat.Modelos.Modelo_Comunicacion.MTypes;
 import chat.Controladores.Controlador_cuentas;
 import com.google.gson.Gson;
 import chat.Modelos.Modelo_usuarios;
+import chat.Modelos.Modelo_pet_amigos;
+import chat.Controladores.Controlador_pet_amigos;
 import chat.Controladores.Controlador_usuarios;
 import java.net.Socket;
 import chat.Modelos.Modelo_Mensaje;
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -56,6 +59,12 @@ public class ProcesoJson {
                             mensajeEntrante.getContenido().toString(),
                             Modelo_Mensaje.class
                         )
+                );
+            case RQ_NAMIGO:
+                return agregarAmigo(
+                        gson.fromJson(
+                            mensajeEntrante.getContenido().toString(),
+                            Modelo_usuarios.class)
                 );
             default:
                 return notFound();
@@ -118,5 +127,36 @@ public class ProcesoJson {
         mensajeSaliente.setTipo(MTypes.ACK);
         mensajeSaliente.setContenido(client);
         return "";
+    }
+    
+    public String logout(){
+        hashTable.remove(this.client);
+        client.closeSocket();
+        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
+        mensajeSaliente.setContenido(230);
+        mensajeSaliente.setTipo(MTypes.ACK);
+        return gson.toJson(mensajeSaliente);
+    }
+    
+    public String agregarAmigo(Modelo_usuarios usuario){
+        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
+        Modelo_pet_amigos peticion = new Modelo_pet_amigos();
+        Controlador_pet_amigos cuenta = new Controlador_pet_amigos();
+        peticion.setSolicitado(usuario.getId());
+        peticion.setSolicitante(hashTable.get(client));
+        cuenta.Insert(peticion);
+        mensajeSaliente.setContenido(240);
+        mensajeSaliente.setTipo(MTypes.ACK);
+        return gson.toJson(mensajeSaliente);
+    }
+
+ public Hilo isConectado(int id){
+        for(Object val : hashTable.entrySet()){
+            Map.Entry entry = (Map.Entry) val;
+            if((int)entry.getValue() == id){
+                return (Hilo)entry.getKey();
+            }
+        }
+        return null;
     }
 }
