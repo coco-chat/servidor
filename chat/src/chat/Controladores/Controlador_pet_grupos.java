@@ -18,10 +18,10 @@ import java.util.List;
  */
 public class Controlador_pet_grupos {
     
-    Conexion db = new Conexion();
+    private Conexion db;
     
     public Controlador_pet_grupos() {
-        
+        this.db = new Conexion();
     }
     
     public List<Modelo_pet_grupos> Select() {

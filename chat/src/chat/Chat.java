@@ -37,6 +37,6 @@ public class Chat {
         } catch (IOException ex) {
             ConsoleInfo.error(cont,"Creacion de socket","Socket no creado");
         }
-
+        
     }
 }

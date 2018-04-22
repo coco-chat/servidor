@@ -18,10 +18,10 @@ import java.util.List;
  */
 public class Controlador_grupos {
     
-    private Conexion db = new Conexion();
+    private Conexion db;
     
     public Controlador_grupos() {
-        
+        this.db = new Conexion();
     }
     
     public List<Modelo_grupos> Select(){

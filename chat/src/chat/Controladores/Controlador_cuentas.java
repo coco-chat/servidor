@@ -17,10 +17,10 @@ import java.util.List;
  */
 public class Controlador_cuentas {
     
-    private Conexion db = new Conexion();
+    private Conexion db;
     
     public Controlador_cuentas() {
-        
+        this.db = new Conexion();
     }
     
     /**

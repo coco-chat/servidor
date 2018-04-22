@@ -16,12 +16,12 @@ import java.util.List;
  *
  * @author juanc
  */
-public class Controlador_amigos extends Conexion {
+public class Controlador_amigos {
     
-    private Conexion db = new Conexion();
+    private Conexion db;
     
     public Controlador_amigos() {
-        
+        this.db = new Conexion();
     }
     
     public List<Modelo_amigos> Select(){
