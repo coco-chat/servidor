@@ -21,6 +21,10 @@ public class Conexion {
     
     protected Connection con;
     
+    public Connection getCon() {
+        return con;
+    }
+    
     public Conexion() {
         try {
             Class.forName("com.mysql.jdbc.Driver");

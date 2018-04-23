@@ -53,8 +53,17 @@ public class Controlador_amigos {
             String apodo2 = amigo.getApodo2();
             String consulta = "INSERT INTO amigos VALUES " + "(" + id + ", " + 
                     amigo1 + ", " + amigo2 + ", '" + apodo1 + "', '" + apodo2 + "')";
-            return db.ComandoInsertUpdateDelete(consulta);
+            db.getCon().setAutoCommit(false);
+            if (db.ComandoInsertUpdateDelete(consulta) == 1) {
+                db.getCon().commit();
+                return id;
+            }
+            return -1;
         } catch(Exception ex) {
+            try {
+                db.getCon().rollback();
+            } catch(SQLException e) {
+            }
             return -1;
         }
     }

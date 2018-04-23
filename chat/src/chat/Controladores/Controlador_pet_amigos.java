@@ -42,16 +42,26 @@ public class Controlador_pet_amigos {
         }
     }
     
-    public int Insert(Modelo_pet_amigos pet_amigo) {
+    public String Insert(Modelo_pet_amigos pet_amigo) {
         try {
             int solicitante = pet_amigo.getSolicitante();
             int solicitado = pet_amigo.getSolicitado();
-            String id = Integer.toString(solicitante) + Integer.toString(solicitado);
+            String id = Integer.toString(solicitante) + "-" + 
+                        Integer.toString(solicitado);
             String consulta = "INSERT INTO pet_amigos VALUES('" + id + "'," + 
                     solicitante + "," + solicitado + ")";
-            return db.ComandoInsertUpdateDelete(consulta);
+            db.getCon().setAutoCommit(false);
+            if (db.ComandoInsertUpdateDelete(consulta) == 1) {
+                db.getCon().commit();
+                return id;
+            }
+            return "";
         } catch(Exception ex) {
-            return -1;
+            try {
+                db.getCon().rollback();
+            } catch(Exception e) {
+            }
+            return "";
         }
     }
     

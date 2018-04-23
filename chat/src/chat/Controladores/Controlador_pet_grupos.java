@@ -49,9 +49,18 @@ public class Controlador_pet_grupos {
             int usuario = pet_grupo.getUsuario();
             String consulta = "INSERT INTO pet_grupos VALUES (" + id + ", " 
                     + grupo + ", " + usuario + ")";
-            return db.ComandoInsertUpdateDelete(consulta);
+            db.getCon().setAutoCommit(false);
+            if (db.ComandoInsertUpdateDelete(consulta) == 1) {
+                db.getCon().commit();
+                return id;
+            }
+            return -1;
         } catch(Exception ex) {
-            return -1;  
+            try {
+                db.getCon().rollback();
+            } catch(Exception e) {
+            }
+            return -1; 
         }
     }
     

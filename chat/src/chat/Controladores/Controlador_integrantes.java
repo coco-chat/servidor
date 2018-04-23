@@ -49,8 +49,17 @@ public class Controlador_integrantes {
             int usuario = integrante.getUsuario();
             String consulta = "INSERT INTO integrantes VALUES "
                     + "(" + id + ", " + grupo + ", " + usuario + ")";
-            return db.ComandoInsertUpdateDelete(consulta);
+            db.getCon().setAutoCommit(false);
+            if (db.ComandoInsertUpdateDelete(consulta) == 1) {
+                db.getCon().commit();
+                return id;
+            }
+            return -1;
         } catch(Exception ex) {
+            try {
+                db.getCon().rollback();
+            } catch(Exception e) {
+            }
             return -1;
         }
     }

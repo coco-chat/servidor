@@ -49,8 +49,17 @@ public class Controlador_grupos {
             String nombre = grupo.getNombre();
             String consulta = "INSERT INTO grupos VALUES "
                     + "(" + id + ", " + admin + ", '" + nombre + "')";
-            return db.ComandoInsertUpdateDelete(consulta);
+            db.getCon().setAutoCommit(false);
+            if (db.ComandoInsertUpdateDelete(consulta) == 1) {
+                db.getCon().commit();
+                return id;
+            }
+            return -1;
         } catch(Exception ex) {
+            try {
+                db.getCon().rollback();
+            } catch(Exception e) {
+            }
             return -1;
         }
     }
