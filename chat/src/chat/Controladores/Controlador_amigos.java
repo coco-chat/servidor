@@ -46,13 +46,13 @@ public class Controlador_amigos {
     
     public int Insert(Modelo_amigos amigo) {
         try {
+            int id = this.NextId();
             int amigo1 = amigo.getAmigo1();
             int amigo2 = amigo.getAmigo2();
             String apodo1 = amigo.getApodo1();
             String apodo2 = amigo.getApodo2();
-            String consulta = "INSERT INTO amigos (amigo1, amigo2, apodo1, apodo2)"
-                    + " VALUES (" + amigo1 + ", " + amigo2 + ", '" + apodo1 +
-                    "', '" + apodo2 + "')";
+            String consulta = "INSERT INTO amigos VALUES " + "(" + id + ", " + 
+                    amigo1 + ", " + amigo2 + ", '" + apodo1 + "', '" + apodo2 + "')";
             return db.ComandoInsertUpdateDelete(consulta);
         } catch(Exception ex) {
             return -1;
@@ -86,6 +86,16 @@ public class Controlador_amigos {
         } catch(Exception ex) {
             return -1;
         }
+    }
+    
+    public int NextId() {
+        List<Modelo_amigos> lista = this.Select();
+        if(lista == null)
+            return -1;
+        if (lista.isEmpty())
+            return 1;
+        Modelo_amigos ultimo = (Modelo_amigos)lista.get(lista.size() - 1);
+        return ultimo.getId() + 1;
     }
     
 }

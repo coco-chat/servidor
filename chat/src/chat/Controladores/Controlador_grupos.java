@@ -44,10 +44,11 @@ public class Controlador_grupos {
     
     public int Insert(Modelo_grupos grupo) {
         try {
+            int id = this.NextId();
             int admin = grupo.getAdmin();
             String nombre = grupo.getNombre();
-            String consulta = "INSERT INTO grupos (admin, nombre) VALUES "
-                    + "(" + admin + ", '" + nombre + "')";
+            String consulta = "INSERT INTO grupos VALUES "
+                    + "(" + id + ", " + admin + ", '" + nombre + "')";
             return db.ComandoInsertUpdateDelete(consulta);
         } catch(Exception ex) {
             return -1;
@@ -77,6 +78,16 @@ public class Controlador_grupos {
         } catch(Exception ex) {
             return -1;
         }
+    }
+    
+    public int NextId() {
+        List<Modelo_grupos> lista = this.Select();
+        if(lista == null)
+            return -1;
+        if (lista.isEmpty())
+            return 1;
+        Modelo_grupos ultimo = (Modelo_grupos)lista.get(lista.size() - 1);
+        return ultimo.getId() + 1;
     }
     
 }

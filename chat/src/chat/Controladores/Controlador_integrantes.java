@@ -44,10 +44,11 @@ public class Controlador_integrantes {
     
     public int Insert(Modelo_integrantes integrante) {
         try {
+            int id = this.NextId();
             int grupo = integrante.getGrupo();
             int usuario = integrante.getUsuario();
-            String consulta = "INSERT INTO integrantes (grupo, usuario) VALUES "
-                    + "(" + grupo + ", " + usuario + ")";
+            String consulta = "INSERT INTO integrantes VALUES "
+                    + "(" + id + ", " + grupo + ", " + usuario + ")";
             return db.ComandoInsertUpdateDelete(consulta);
         } catch(Exception ex) {
             return -1;
@@ -77,6 +78,16 @@ public class Controlador_integrantes {
         } catch(Exception ex) {
             return -1;
         }
+    }
+    
+    public int NextId() {
+        List<Modelo_integrantes> lista = this.Select();
+        if(lista == null)
+            return -1;
+        if (lista.isEmpty())
+            return 1;
+        Modelo_integrantes ultimo = (Modelo_integrantes)lista.get(lista.size() - 1);
+        return ultimo.getId() + 1;
     }
     
 }

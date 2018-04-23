@@ -44,10 +44,11 @@ public class Controlador_pet_grupos {
     
     public int Insert(Modelo_pet_grupos pet_grupo) {
         try {
+            int id = this.NextId();
             int grupo = pet_grupo.getGrupo();
             int usuario = pet_grupo.getUsuario();
-            String consulta = "INSERT INTO pet_grupos VALUES (null," + grupo + 
-                    "," + usuario + ")";
+            String consulta = "INSERT INTO pet_grupos VALUES (" + id + ", " 
+                    + grupo + ", " + usuario + ")";
             return db.ComandoInsertUpdateDelete(consulta);
         } catch(Exception ex) {
             return -1;  
@@ -90,6 +91,16 @@ public class Controlador_pet_grupos {
         } catch(Exception ex) {
             return -1;
         }
+    }
+    
+    public int NextId() {
+        List<Modelo_pet_grupos> lista = this.Select();
+        if(lista == null)
+            return -1;
+        if (lista.isEmpty())
+            return 1;
+        Modelo_pet_grupos ultimo = (Modelo_pet_grupos)lista.get(lista.size() - 1);
+        return ultimo.getId() + 1;
     }
     
 }

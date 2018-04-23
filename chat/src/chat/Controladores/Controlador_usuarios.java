@@ -44,10 +44,11 @@ public class Controlador_usuarios {
     
     public int Insert(Modelo_usuarios usuario) {
         try {
+            int id = this.NextId();
             String username = usuario.getUsername();
             String password = usuario.getPassword();
-            String consulta = "Insert into usuarios values(null,'" + username + 
-                    "',sha('" + password + "'))";
+            String consulta = "INSERT INTO usuarios VALUES (" + id + ", '" + 
+                    username + "', sha('" + password + "'))";
             return db.ComandoInsertUpdateDelete(consulta);
         } catch(Exception ex) {
             return -1;
@@ -75,6 +76,16 @@ public class Controlador_usuarios {
         } catch(Exception ex) {
             return -1;
         }
+    }
+    
+    public int NextId() {
+        List<Modelo_usuarios> lista = this.Select();
+        if(lista == null)
+            return -1;
+        if (lista.isEmpty())
+            return 1;
+        Modelo_usuarios ultimo = (Modelo_usuarios)lista.get(lista.size() - 1);
+        return ultimo.getId() + 1;
     }
     
 }
