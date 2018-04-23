@@ -44,6 +44,7 @@ Codigo | Significado
 220 | registro exitoso y login exitoso
 230 | logout exitoso
 240 | solicitud de amigo enviada
+241 | solicitud aceptada (amigo 2)
 250 | solicitud de grupo enviada
 260 | mensaje enviado
 270 | grupo creado
