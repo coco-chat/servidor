@@ -16,6 +16,7 @@ import chat.Modelos.Modelo_pet_amigos;
 import chat.Controladores.Controlador_pet_amigos;
 import chat.Controladores.Controlador_pet_grupos;
 import chat.Controladores.Controlador_usuarios;
+import chat.Modelos.Modelo_pet_grupos;
 import java.net.Socket;
 import chat.Modelos.Modelo_Mensaje;
 import chat.Modelos.Modelo_amigos;
@@ -93,6 +94,13 @@ public class ProcesoJson {
                         gson.fromJson(
                             mensajeEntrante.getContenido().toString(),
                             Modelo_nuevoGrupo.class
+                        )
+                );
+            case RQ_NMIEMBRO:
+                return nuevoMiembro(
+                        gson.fromJson(
+                            mensajeEntrante.getContenido().toString(),
+                            Modelo_pet_grupos.class
                         )
                 );
             default:
@@ -248,6 +256,16 @@ public class ProcesoJson {
             }
         }
         mensajeSaliente.setContenido(usuariosList);
+        return gson.toJson(mensajeSaliente);
+    }
+    
+    public String nuevoMiembro(Modelo_pet_grupos nuevoMiembro){
+        Controlador_pet_grupos pet_grupo = new Controlador_pet_grupos();
+        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
+        mensajeSaliente.setTipo(MTypes.ACK);
+        int result = pet_grupo.Insert(nuevoMiembro);
+        if(result == -1)mensajeSaliente.setContenido(471);
+        else mensajeSaliente.setContenido(271);
         return gson.toJson(mensajeSaliente);
     }
 }
