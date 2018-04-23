@@ -22,6 +22,7 @@ Las siguientes partes son necesarias:
 - [X] solicitud amigo
 - [ ] olvidar amigo
 - [ ] cambiar apodo amigo
+- [ ] cambiar nombre grupo
 - [X] agregar integrantes grupo
 - [X] creargrupo + agregar integrantes grupo
 - [ ] eliminar integrante grupo (admin, o personal)
