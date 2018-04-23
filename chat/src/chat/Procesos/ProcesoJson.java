@@ -20,6 +20,7 @@ import chat.Modelos.Modelo_pet_grupos;
 import java.net.Socket;
 import chat.Modelos.Modelo_Mensaje;
 import chat.Modelos.Modelo_amigos;
+import chat.Modelos.Modelo_grupos;
 import chat.Modelos.Modelo_nuevoGrupo;
 import chat.Modelos.Modelo_pet_grupos;
 import java.util.ArrayList;
@@ -85,6 +86,20 @@ public class ProcesoJson {
                             Modelo_usuarios.class
                         )
                 );
+            case RQ_DAMIGO:
+                return olvidarAmigo(
+                        gson.fromJson(
+                                mensajeEntrante.getContenido().toString(),
+                                Modelo_amigos.class
+                        )
+                );
+            case RQ_APODO:
+                return actualizarApodoAmigo(
+                        gson.fromJson(
+                                mensajeEntrante.getContenido().toString(),
+                                Modelo_amigos.class
+                        )
+                );
             case RQ_CONECTADOS:
                 return getConectados();
             case RQ_DESCONECTADOS:
@@ -101,6 +116,13 @@ public class ProcesoJson {
                         gson.fromJson(
                             mensajeEntrante.getContenido().toString(),
                             Modelo_pet_grupos.class
+                        )
+                );
+            case RQ_CGRUPO://?
+                return cambiarNombreGrupo(
+                        gson.fromJson(
+                                mensajeEntrante.getContenido().toString(),
+                                Modelo_grupos.class
                         )
                 );
             default:
@@ -220,6 +242,43 @@ public class ProcesoJson {
         mensajeSaliente.setTipo(MTypes.ACK);
         return gson.toJson(mensajeSaliente);
     }
+    
+    public String olvidarAmigo (Modelo_amigos amistad) {
+        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
+        Controlador_amigos relacionAmigos = new Controlador_amigos();       
+        if(relacionAmigos.Delete(amistad) == 1) {
+            mensajeSaliente.setContenido(242);
+            mensajeSaliente.setTipo(MTypes.ACK);
+        } else {
+            mensajeSaliente.setContenido(442);
+            mensajeSaliente.setTipo(MTypes.ACK);
+        }
+        return gson.toJson(mensajeSaliente);
+    }
+    
+    public String actualizarApodoAmigo (Modelo_amigos amistad) {
+        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
+        Controlador_amigos actualizarApodo = new Controlador_amigos();
+        /*
+        Modelo_amigos amistad = new Modelo_amigos();
+        
+        amistad.setAmigo1(amigo.getId());
+        amistad.setAmigo2(hashTable.get(client));
+        amistad.setApodo1();
+        */
+                
+        //No se actualiza el apodo mismo, se queda en null y se detecta
+        //después para no mostrarlo
+
+        if (actualizarApodo.Update(amistad) == 1) {
+            mensajeSaliente.setContenido(243);
+            mensajeSaliente.setTipo(MTypes.ACK);
+        } else {
+            mensajeSaliente.setContenido(443);
+            mensajeSaliente.setTipo(MTypes.ACK);
+        }
+        return gson.toJson(mensajeSaliente);
+    }
 
     public Hilo isConectado(int id){
         for(Object val : hashTable.entrySet()){
@@ -266,6 +325,19 @@ public class ProcesoJson {
         int result = pet_grupo.Insert(nuevoMiembro);
         if(result == -1)mensajeSaliente.setContenido(471);
         else mensajeSaliente.setContenido(271);
+        return gson.toJson(mensajeSaliente);
+    }
+    
+    public String cambiarNombreGrupo (Modelo_grupos grupo) {
+        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
+        Controlador_grupos cambiarNombreIntermediario = new Controlador_grupos();
+        if (cambiarNombreIntermediario.Update(grupo) == 1) {
+            mensajeSaliente.setContenido(272);
+            mensajeSaliente.setTipo(MTypes.ACK);
+        } else  {
+            mensajeSaliente.setContenido(472);
+            mensajeSaliente.setTipo(MTypes.ACK);
+        }
         return gson.toJson(mensajeSaliente);
     }
 }
