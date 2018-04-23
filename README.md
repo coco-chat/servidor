@@ -27,6 +27,9 @@ Las siguientes partes son necesarias:
 - [ ] eliminar integrante grupo (admin, o personal)
 - [X] pedir lista de usuarios conectados
 - [X] pedir lista de usuarios desconectados
+- [ ] pedir lista de amigos
+- [ ] pedir lista de grupos
+- [ ] pedir información de grupo
 
 #### Envío de mensajes a clientes
 - [ ] reconocimiento de mensajes (validación)
