@@ -5,24 +5,24 @@
  */
 package chat.Procesos;
 
-import chat.Controladores.Controlador_amigos;
-import chat.Modelos.Modelo_Comunicacion;
-import chat.Modelos.Modelo_Comunicacion.MTypes;
-import chat.Controladores.Controlador_cuentas;
-import chat.Controladores.Controlador_grupos;
+import chat.Controladores.AmigosController;
+import chat.Modelos.Comunicacion;
+import chat.Modelos.Comunicacion.MTypes;
+import chat.Controladores.CuentasController;
+import chat.Controladores.GruposController;
 import com.google.gson.Gson;
-import chat.Modelos.Modelo_usuarios;
-import chat.Modelos.Modelo_pet_amigos;
-import chat.Controladores.Controlador_pet_amigos;
-import chat.Controladores.Controlador_pet_grupos;
-import chat.Controladores.Controlador_usuarios;
-import chat.Modelos.Modelo_pet_grupos;
+import chat.Modelos.Usuario;
+import chat.Modelos.PetAmigo;
+import chat.Controladores.PetAmigosController;
+import chat.Controladores.PetGruposController;
+import chat.Controladores.UsuariosController;
+import chat.Modelos.PetGrupo;
 import java.net.Socket;
-import chat.Modelos.Modelo_Mensaje;
-import chat.Modelos.Modelo_amigos;
-import chat.Modelos.Modelo_grupos;
-import chat.Modelos.Modelo_nuevoGrupo;
-import chat.Modelos.Modelo_pet_grupos;
+import chat.Modelos.Mensaje;
+import chat.Modelos.Amigo;
+import chat.Modelos.Grupo;
+import chat.Modelos.NuevoGrupo;
+import chat.Modelos.PetGrupo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,60 +44,45 @@ public class ProcesoJson {
     }
     
     public String procesar(String JSON){
-        Modelo_Comunicacion mensajeEntrante;
-        mensajeEntrante = gson.fromJson(
-                JSON, Modelo_Comunicacion.class
+        Comunicacion mensajeEntrante;
+        mensajeEntrante = gson.fromJson(JSON, Comunicacion.class
         );
         switch(mensajeEntrante.getTipo()){
             case RQ_LOGIN: 
-                return login(
-                        gson.fromJson(
-                            mensajeEntrante.getContenido().toString(),
-                            Modelo_usuarios.class
+                return login(gson.fromJson(mensajeEntrante.getContenido().toString(),
+                            Usuario.class
                         )
                 );
             case RQ_REG:
-                return registro(
-                        gson.fromJson(
-                            mensajeEntrante.getContenido().toString(),
-                            Modelo_usuarios.class
+                return registro(gson.fromJson(mensajeEntrante.getContenido().toString(),
+                            Usuario.class
                         )
                 );
             case RQ_MENSAJE:
-                return mensaje(
-                        gson.fromJson(
-                            mensajeEntrante.getContenido().toString(),
-                            Modelo_Mensaje.class
+                return mensaje(gson.fromJson(mensajeEntrante.getContenido().toString(),
+                            Mensaje.class
                         )
                 );
             case RQ_NAMIGO:
-                return agregarAmigo(
-                        gson.fromJson(
-                            mensajeEntrante.getContenido().toString(),
-                            Modelo_usuarios.class
+                return agregarAmigo(gson.fromJson(mensajeEntrante.getContenido().toString(),
+                            Usuario.class
                         )
                 );
             case RQ_LOGOUT:
                 return logout();
             case RQ_AAMIGO:
-                return aceptarAmigo(
-                        gson.fromJson(
-                            mensajeEntrante.getContenido().toString(),
-                            Modelo_usuarios.class
+                return aceptarAmigo(gson.fromJson(mensajeEntrante.getContenido().toString(),
+                            Usuario.class
                         )
                 );
             case RQ_DAMIGO:
-                return olvidarAmigo(
-                        gson.fromJson(
-                                mensajeEntrante.getContenido().toString(),
-                                Modelo_amigos.class
+                return olvidarAmigo(gson.fromJson(mensajeEntrante.getContenido().toString(),
+                                Amigo.class
                         )
                 );
             case RQ_APODO:
-                return actualizarApodoAmigo(
-                        gson.fromJson(
-                                mensajeEntrante.getContenido().toString(),
-                                Modelo_amigos.class
+                return actualizarApodoAmigo(gson.fromJson(mensajeEntrante.getContenido().toString(),
+                                Amigo.class
                         )
                 );
             case RQ_CONECTADOS:
@@ -105,24 +90,18 @@ public class ProcesoJson {
             case RQ_DESCONECTADOS:
                 return getDesconectados();
             case RQ_GRUPO:
-                return crearGrupo(
-                        gson.fromJson(
-                            mensajeEntrante.getContenido().toString(),
-                            Modelo_nuevoGrupo.class
+                return crearGrupo(gson.fromJson(mensajeEntrante.getContenido().toString(),
+                            NuevoGrupo.class
                         )
                 );
             case RQ_NMIEMBRO:
-                return nuevoMiembro(
-                        gson.fromJson(
-                            mensajeEntrante.getContenido().toString(),
-                            Modelo_pet_grupos.class
+                return nuevoMiembro(gson.fromJson(mensajeEntrante.getContenido().toString(),
+                            PetGrupo.class
                         )
                 );
             case RQ_CGRUPO://?
-                return cambiarNombreGrupo(
-                        gson.fromJson(
-                                mensajeEntrante.getContenido().toString(),
-                                Modelo_grupos.class
+                return cambiarNombreGrupo(gson.fromJson(mensajeEntrante.getContenido().toString(),
+                                Grupo.class
                         )
                 );
             default:
@@ -131,15 +110,15 @@ public class ProcesoJson {
     }
     
     public String notFound(){
-        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
+        Comunicacion mensajeSaliente = new Comunicacion();
         mensajeSaliente.setTipo(MTypes.ACK);
         mensajeSaliente.setContenido(404);
         return gson.toJson(mensajeSaliente);
     }
     
-    public String login(Modelo_usuarios usuario){
-        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
-        Controlador_cuentas cuentas = new Controlador_cuentas();
+    public String login(Usuario usuario){
+        Comunicacion mensajeSaliente = new Comunicacion();
+        CuentasController cuentas = new CuentasController();
         int result = cuentas.Login(usuario.getUsername(), usuario.getPassword());
         mensajeSaliente.setTipo(MTypes.ACK_LOGIN);
         if (result == -1) {
@@ -151,10 +130,10 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
     
-    public String registro(Modelo_usuarios usuario){
+    public String registro(Usuario usuario){
         int result;
-        Controlador_cuentas cuenta = new Controlador_cuentas();
-        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
+        CuentasController cuenta = new CuentasController();
+        Comunicacion mensajeSaliente = new Comunicacion();
         mensajeSaliente.setTipo(MTypes.ACK);
         
         result = cuenta.Register(usuario.getUsername(), usuario.getPassword());
@@ -177,9 +156,9 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
     
-    public String mensaje(Modelo_Mensaje mensaje){
-        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
-        Modelo_Comunicacion mensajeRemoto = new Modelo_Comunicacion();
+    public String mensaje(Mensaje mensaje){
+        Comunicacion mensajeSaliente = new Comunicacion();
+        Comunicacion mensajeRemoto = new Comunicacion();
         Hilo destino = isConectado(mensaje.getDestino().getId());
         if(destino!=null){
             mensajeRemoto.setTipo(MTypes.SEND_MENSAJE);
@@ -193,7 +172,7 @@ public class ProcesoJson {
     public String logout(){
         hashTable.remove(this.client);
         client.closeSocket();
-        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
+        Comunicacion mensajeSaliente = new Comunicacion();
         
         mensajeSaliente.setContenido(230);
         mensajeSaliente.setTipo(MTypes.ACK);
@@ -201,10 +180,10 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
     
-    public String agregarAmigo(Modelo_usuarios usuario){
-        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
-        Modelo_pet_amigos peticion = new Modelo_pet_amigos();
-        Controlador_pet_amigos agregar = new Controlador_pet_amigos();
+    public String agregarAmigo(Usuario usuario){
+        Comunicacion mensajeSaliente = new Comunicacion();
+        PetAmigo peticion = new PetAmigo();
+        PetAmigosController agregar = new PetAmigosController();
         
         if(agregar.verificarPeticion(hashTable.get(client), usuario.getId()) == 0) {
             peticion.setSolicitado(usuario.getId());
@@ -219,22 +198,22 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
     
-    public String crearGrupo(Modelo_nuevoGrupo nuevoGrupo){
-        Controlador_grupos grupos = new Controlador_grupos();
-        Controlador_pet_grupos petGrupos = new Controlador_pet_grupos();
-        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
+    public String crearGrupo(NuevoGrupo nuevoGrupo){
+        GruposController grupos = new GruposController();
+        PetGruposController petGrupos = new PetGruposController();
+        Comunicacion mensajeSaliente = new Comunicacion();
         mensajeSaliente.setTipo(MTypes.ACK);
         grupos.Insert(nuevoGrupo.getGrupo());
-        for(Modelo_pet_grupos pet: nuevoGrupo.getIntegrantes())
+        for(PetGrupo pet: nuevoGrupo.getIntegrantes())
             petGrupos.Insert(pet);
         mensajeSaliente.setContenido(270);
         return gson.toJson(mensajeSaliente);
     }
     
-    public String aceptarAmigo(Modelo_usuarios usuario){
-        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
-        Modelo_amigos peticion = new Modelo_amigos();
-        Controlador_amigos aceptar = new Controlador_amigos();
+    public String aceptarAmigo(Usuario usuario){
+        Comunicacion mensajeSaliente = new Comunicacion();
+        Amigo peticion = new Amigo();
+        AmigosController aceptar = new AmigosController();
         peticion.setAmigo1(usuario.getId());
         peticion.setAmigo2(hashTable.get(client));
         aceptar.Insert(peticion);
@@ -243,9 +222,9 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
     
-    public String olvidarAmigo (Modelo_amigos amistad) {
-        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
-        Controlador_amigos relacionAmigos = new Controlador_amigos();       
+    public String olvidarAmigo (Amigo amistad) {
+        Comunicacion mensajeSaliente = new Comunicacion();
+        AmigosController relacionAmigos = new AmigosController();       
         if(relacionAmigos.Delete(amistad) == 1) {
             mensajeSaliente.setContenido(242);
             mensajeSaliente.setTipo(MTypes.ACK);
@@ -256,11 +235,11 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
     
-    public String actualizarApodoAmigo (Modelo_amigos amistad) {
-        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
-        Controlador_amigos actualizarApodo = new Controlador_amigos();
+    public String actualizarApodoAmigo (Amigo amistad) {
+        Comunicacion mensajeSaliente = new Comunicacion();
+        AmigosController actualizarApodo = new AmigosController();
         /*
-        Modelo_amigos amistad = new Modelo_amigos();
+        Amigo amistad = new Amigo();
         
         amistad.setAmigo1(amigo.getId());
         amistad.setAmigo2(hashTable.get(client));
@@ -291,11 +270,11 @@ public class ProcesoJson {
     }
     
     public String getConectados(){
-        Controlador_usuarios usuarios = new Controlador_usuarios();
-        List<Modelo_usuarios> usuariosList = usuarios.Select();
-        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
+        UsuariosController usuarios = new UsuariosController();
+        List<Usuario> usuariosList = usuarios.Select();
+        Comunicacion mensajeSaliente = new Comunicacion();
         mensajeSaliente.setTipo(MTypes.SEND_CONECTADOS);
-        for(Modelo_usuarios usuario: usuariosList){
+        for(Usuario usuario: usuariosList){
             if(isConectado(usuario.getId())== null){
                 usuariosList.remove(usuario);
             }
@@ -305,11 +284,11 @@ public class ProcesoJson {
     }
     
     public String getDesconectados(){
-        Controlador_usuarios usuarios = new Controlador_usuarios();
-        List<Modelo_usuarios> usuariosList = usuarios.Select();
-        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
+        UsuariosController usuarios = new UsuariosController();
+        List<Usuario> usuariosList = usuarios.Select();
+        Comunicacion mensajeSaliente = new Comunicacion();
         mensajeSaliente.setTipo(MTypes.SEND_CONECTADOS);
-        for(Modelo_usuarios usuario: usuariosList){
+        for(Usuario usuario: usuariosList){
             if(isConectado(usuario.getId())!= null){
                 usuariosList.remove(usuario);
             }
@@ -318,9 +297,9 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
     
-    public String nuevoMiembro(Modelo_pet_grupos nuevoMiembro){
-        Controlador_pet_grupos pet_grupo = new Controlador_pet_grupos();
-        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
+    public String nuevoMiembro(PetGrupo nuevoMiembro){
+        PetGruposController pet_grupo = new PetGruposController();
+        Comunicacion mensajeSaliente = new Comunicacion();
         mensajeSaliente.setTipo(MTypes.ACK);
         int result = pet_grupo.Insert(nuevoMiembro);
         if(result == -1)mensajeSaliente.setContenido(471);
@@ -328,9 +307,9 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
     
-    public String cambiarNombreGrupo (Modelo_grupos grupo) {
-        Modelo_Comunicacion mensajeSaliente = new Modelo_Comunicacion();
-        Controlador_grupos cambiarNombreIntermediario = new Controlador_grupos();
+    public String cambiarNombreGrupo (Grupo grupo) {
+        Comunicacion mensajeSaliente = new Comunicacion();
+        GruposController cambiarNombreIntermediario = new GruposController();
         if (cambiarNombreIntermediario.Update(grupo) == 1) {
             mensajeSaliente.setContenido(272);
             mensajeSaliente.setTipo(MTypes.ACK);
