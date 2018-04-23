@@ -216,7 +216,7 @@ public class ProcesoJson {
         peticion.setAmigo1(usuario.getId());
         peticion.setAmigo2(hashTable.get(client));
         aceptar.Insert(peticion);
-        mensajeSaliente.setContenido(250);
+        mensajeSaliente.setContenido(241);
         mensajeSaliente.setTipo(MTypes.ACK);
         return gson.toJson(mensajeSaliente);
     }
