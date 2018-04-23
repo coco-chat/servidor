@@ -20,9 +20,9 @@ Las siguientes partes son necesarias:
 - [X] logout
 - [X] recepción de mensaje
 - [X] solicitud amigo
-- [ ] olvidar amigo
-- [ ] cambiar apodo amigo
-- [ ] cambiar nombre grupo
+- [X] olvidar amigo
+- [X] cambiar apodo amigo
+- [X] cambiar nombre grupo
 - [X] agregar integrantes grupo
 - [X] creargrupo + agregar integrantes grupo
 - [ ] eliminar integrante grupo (admin, o personal)
@@ -49,10 +49,13 @@ Codigo | Significado
 230 | logout exitoso
 240 | solicitud de amigo enviada
 241 | solicitud aceptada (amigo 2)
+242 | amistad olvidada
+243 | apodo de amigo actualizado
 250 | solicitud de grupo enviada
 260 | mensaje enviado
 270 | grupo creado
 271 | miembro agregado correctamente(peticion de miembro)
+272 | nombre de grupo actualizado
 404 | comando no encontrado
 410 | error en el login
 420 | registro exitoso pero login fallido
@@ -60,8 +63,11 @@ Codigo | Significado
 422 | registro fallido
 440 | solicitud de amigo no enviada
 441 | solicitud de amigo ya registrada
+442 | solicitud de olvidar amigo ya registrada o no disponible
+443 | solicitud de actualización de apodo de amigo no disponible
 450 | solicitud de grupo no enviada
 451 | solicitud de grupo ya registrada
 460 | mensaje no enviado
 470 | grupo no creado
 471 | miembro no agregado (peticion de miembro)
+472 | petición de actualización de nombre de grupo fallida
