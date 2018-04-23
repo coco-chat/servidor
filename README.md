@@ -22,7 +22,7 @@ Las siguientes partes son necesarias:
 - [X] solicitud amigo
 - [ ] olvidar amigo
 - [ ] cambiar apodo amigo
-- [ ] agregar integrantes grupo
+- [X] agregar integrantes grupo
 - [X] creargrupo + agregar integrantes grupo
 - [ ] eliminar integrante grupo (admin, o personal)
 - [X] pedir lista de usuarios conectados
@@ -47,6 +47,7 @@ Codigo | Significado
 250 | solicitud de grupo enviada
 260 | mensaje enviado
 270 | grupo creado
+271 | miembro agregado correctamente(peticion de miembro)
 404 | comando no encontrado
 410 | error en el login
 420 | registro exitoso pero login fallido
@@ -57,3 +58,5 @@ Codigo | Significado
 450 | solicitud de grupo no enviada
 451 | solicitud de grupo ya registrada
 460 | mensaje no enviado
+470 | grupo no creado
+471 | miembro no agregado (peticion de miembro)
