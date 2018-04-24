@@ -10,6 +10,7 @@ import chat.Modelos.Comunicacion;
 import chat.Modelos.Comunicacion.MTypes;
 import chat.Controladores.CuentasController;
 import chat.Controladores.GruposController;
+import chat.Controladores.IntegrantesController;
 import com.google.gson.Gson;
 import chat.Modelos.Usuario;
 import chat.Modelos.PetAmigo;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -49,40 +51,47 @@ public class ProcesoJson {
         );
         switch(mensajeEntrante.getTipo()){
             case RQ_LOGIN: 
-                return login(gson.fromJson(mensajeEntrante.getContenido().toString(),
-                            Usuario.class
+                return login(
+                        gson.fromJson(mensajeEntrante.getContenido().toString(),
+                        Usuario.class
                         )
                 );
             case RQ_REG:
-                return registro(gson.fromJson(mensajeEntrante.getContenido().toString(),
-                            Usuario.class
+                return registro(
+                        gson.fromJson(mensajeEntrante.getContenido().toString(),
+                        Usuario.class
                         )
                 );
             case RQ_MENSAJE:
-                return mensaje(gson.fromJson(mensajeEntrante.getContenido().toString(),
-                            Mensaje.class
+                return mensaje(
+                        gson.fromJson(mensajeEntrante.getContenido().toString(),
+                        Mensaje.class
                         )
                 );
             case RQ_NAMIGO:
-                return agregarAmigo(gson.fromJson(mensajeEntrante.getContenido().toString(),
-                            Usuario.class
+                return agregarAmigo(
+                        gson.fromJson(mensajeEntrante.getContenido().toString(),
+                        Usuario.class
                         )
                 );
             case RQ_LOGOUT:
                 return logout();
             case RQ_AAMIGO:
-                return aceptarAmigo(gson.fromJson(mensajeEntrante.getContenido().toString(),
-                            Usuario.class
+                return aceptarAmigo(
+                        gson.fromJson(mensajeEntrante.getContenido().toString(),
+                        Usuario.class
                         )
                 );
             case RQ_DAMIGO:
-                return olvidarAmigo(gson.fromJson(mensajeEntrante.getContenido().toString(),
-                                Amigo.class
+                return olvidarAmigo(
+                        gson.fromJson(mensajeEntrante.getContenido().toString(),
+                        Amigo.class
                         )
                 );
             case RQ_APODO:
-                return actualizarApodoAmigo(gson.fromJson(mensajeEntrante.getContenido().toString(),
-                                Amigo.class
+                return actualizarApodoAmigo(
+                        gson.fromJson(mensajeEntrante.getContenido().toString(),
+                        Amigo.class
                         )
                 );
             case RQ_CONECTADOS:
@@ -90,26 +99,31 @@ public class ProcesoJson {
             case RQ_DESCONECTADOS:
                 return getDesconectados();
             case RQ_GRUPO:
-                return crearGrupo(gson.fromJson(mensajeEntrante.getContenido().toString(),
-                            NuevoGrupo.class
+                return crearGrupo(
+                        gson.fromJson(mensajeEntrante.getContenido().toString(),
+                        NuevoGrupo.class
                         )
                 );
             case RQ_NMIEMBRO:
-                return nuevoMiembro(gson.fromJson(mensajeEntrante.getContenido().toString(),
-                            PetGrupo.class
+                return nuevoMiembro(
+                        gson.fromJson(mensajeEntrante.getContenido().toString(),
+                        PetGrupo.class
                         )
                 );
-            case RQ_CGRUPO://?
-                return cambiarNombreGrupo(gson.fromJson(mensajeEntrante.getContenido().toString(),
-                                Grupo.class
+            case RQ_CGRUPO:
+                return cambiarNombreGrupo(
+                        gson.fromJson(mensajeEntrante.getContenido().toString(),
+                        Grupo.class
                         )
                 );
+            case RQ_AMIGOS:
+                return getAmigos();
             default:
                 return notFound();
         }
     }
     
-    public String notFound(){
+    private String notFound(){
         Comunicacion mensajeSaliente = new Comunicacion();
         mensajeSaliente.setTipo(MTypes.ACK);
         mensajeSaliente.setContenido(404);
@@ -188,7 +202,6 @@ public class ProcesoJson {
         if(agregar.verificarPeticion(hashTable.get(client), usuario.getId()) == 0) {
             peticion.setSolicitado(usuario.getId());
             peticion.setSolicitante(hashTable.get(client));
-            agregar.Insert(peticion);
             mensajeSaliente.setContenido(240);
             mensajeSaliente.setTipo(MTypes.ACK);
         }else{
@@ -203,9 +216,13 @@ public class ProcesoJson {
         PetGruposController petGrupos = new PetGruposController();
         Comunicacion mensajeSaliente = new Comunicacion();
         mensajeSaliente.setTipo(MTypes.ACK);
-        grupos.Insert(nuevoGrupo.getGrupo());
-        for(PetGrupo pet: nuevoGrupo.getIntegrantes())
+        
+        nuevoGrupo.getGrupo().setAdmin(hashTable.get(client));
+        int id = grupos.Insert(nuevoGrupo.getGrupo());
+        for(PetGrupo pet: nuevoGrupo.getIntegrantes()){
+            pet.setGrupo(id);
             petGrupos.Insert(pet);
+        }
         mensajeSaliente.setContenido(270);
         return gson.toJson(mensajeSaliente);
     }
@@ -214,9 +231,27 @@ public class ProcesoJson {
         Comunicacion mensajeSaliente = new Comunicacion();
         Amigo peticion = new Amigo();
         AmigosController aceptar = new AmigosController();
+        PetAmigosController petController = new PetAmigosController();
+        PetAmigo pet = new PetAmigo();
+        UsuariosController usuariosController = new UsuariosController();
+        String nombreA="";
+        String nombreB="";
+        
+        List<Usuario> usuarios = usuariosController.Select();
+        for(Usuario x: usuarios){
+            if(x.getId()==usuario.getId())nombreA=x.getUsername();
+            else if(x.getId()==hashTable.get(client))nombreB=x.getUsername();
+        }
+        
         peticion.setAmigo1(usuario.getId());
+        peticion.setApodo1(nombreA);
         peticion.setAmigo2(hashTable.get(client));
+        peticion.setApodo2(nombreB);
         aceptar.Insert(peticion);
+        
+        pet.setId(usuario.getId()+"-"+hashTable.get(client));
+        petController.Delete(pet);
+        
         mensajeSaliente.setContenido(241);
         mensajeSaliente.setTipo(MTypes.ACK);
         return gson.toJson(mensajeSaliente);
@@ -238,16 +273,6 @@ public class ProcesoJson {
     public String actualizarApodoAmigo (Amigo amistad) {
         Comunicacion mensajeSaliente = new Comunicacion();
         AmigosController actualizarApodo = new AmigosController();
-        /*
-        Amigo amistad = new Amigo();
-        
-        amistad.setAmigo1(amigo.getId());
-        amistad.setAmigo2(hashTable.get(client));
-        amistad.setApodo1();
-        */
-                
-        //No se actualiza el apodo mismo, se queda en null y se detecta
-        //después para no mostrarlo
 
         if (actualizarApodo.Update(amistad) == 1) {
             mensajeSaliente.setContenido(243);
@@ -259,7 +284,7 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
 
-    public Hilo isConectado(int id){
+    private Hilo isConectado(int id){
         for(Object val : hashTable.entrySet()){
             Map.Entry entry = (Map.Entry) val;
             if((int)entry.getValue() == id){
@@ -301,6 +326,7 @@ public class ProcesoJson {
         PetGruposController pet_grupo = new PetGruposController();
         Comunicacion mensajeSaliente = new Comunicacion();
         mensajeSaliente.setTipo(MTypes.ACK);
+        
         int result = pet_grupo.Insert(nuevoMiembro);
         if(result == -1)mensajeSaliente.setContenido(471);
         else mensajeSaliente.setContenido(271);
@@ -318,5 +344,25 @@ public class ProcesoJson {
             mensajeSaliente.setTipo(MTypes.ACK);
         }
         return gson.toJson(mensajeSaliente);
+    }
+    
+    public String getAmigos(){
+        AmigosController amigosController = new AmigosController();
+        Comunicacion mensajeSaliente = new Comunicacion();
+        int id = hashTable.get(client);
+        List<Amigo> amigos = (List<Amigo>) amigosController
+                .Select()
+                .stream()
+                .filter(x->x.getAmigo1()==id || x.getAmigo2()==id);
+        mensajeSaliente.setTipo(MTypes.SEND_AMIGOS);
+        mensajeSaliente.setContenido(amigos);
+        return gson.toJson(mensajeSaliente);
+    }
+    
+    public String getGrupos(){
+        IntegrantesController integrantesController = new IntegrantesController();
+        Comunicacion mensajeSaliente = new Comunicacion();
+        //obtener grupos mediante el controlador
+        return "";
     }
 }
