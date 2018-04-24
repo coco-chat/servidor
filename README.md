@@ -30,7 +30,7 @@ Las siguientes partes son necesarias:
 - [X] pedir lista de usuarios desconectados
 - [X] pedir lista de amigos
 - [ ] pedir lista de grupos
-- [ ] pedir información de grupo
+- [X] pedir información de grupo
 
 #### Envío de mensajes a clientes
 - [ ] reconocimiento de mensajes (validación)
