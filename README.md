@@ -56,6 +56,7 @@ Codigo | Significado
 270 | grupo creado
 271 | miembro agregado correctamente(peticion de miembro)
 272 | nombre de grupo actualizado
+273 | miembro eliminado correctamente
 404 | comando no encontrado
 410 | error en el login
 420 | registro exitoso pero login fallido
@@ -71,3 +72,4 @@ Codigo | Significado
 470 | grupo no creado
 471 | miembro no agregado (peticion de miembro)
 472 | petición de actualización de nombre de grupo fallida
+473 | miembro no eliminado
