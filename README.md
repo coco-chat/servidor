@@ -29,7 +29,7 @@ Las siguientes partes son necesarias:
 - [X] pedir lista de usuarios conectados
 - [X] pedir lista de usuarios desconectados
 - [X] pedir lista de amigos
-- [X] pedir lista de grupos
+- [ ] pedir lista de grupos
 - [ ] pedir información de grupo
 
 #### Envío de mensajes a clientes
