@@ -22,6 +22,8 @@ import java.net.Socket;
 import chat.Modelos.Mensaje;
 import chat.Modelos.Amigo;
 import chat.Modelos.Grupo;
+import chat.Modelos.InfoGrupo;
+import chat.Modelos.Integrante;
 import chat.Modelos.NuevoGrupo;
 import chat.Modelos.PetGrupo;
 import java.util.ArrayList;
@@ -118,6 +120,10 @@ public class ProcesoJson {
                 );
             case RQ_AMIGOS:
                 return getAmigos();
+            case RQ_INFOGRUPO:
+                return getInfoGrupo(
+                        gson.fromJson(mensajeEntrante.getContenido().toString(),Grupo.class)
+                );
             default:
                 return notFound();
         }
@@ -364,5 +370,34 @@ public class ProcesoJson {
         Comunicacion mensajeSaliente = new Comunicacion();
         //obtener grupos mediante el controlador
         return "";
+    }
+    public String getInfoGrupo(Grupo grupo){
+        Comunicacion mensajeSaliente = new Comunicacion();
+        UsuariosController usuarioMiembro = new UsuariosController();
+        List<Usuario> usuarios = new ArrayList<Usuario>();
+     
+        IntegrantesController integrantes = new IntegrantesController();
+        InfoGrupo infogrupo = new InfoGrupo();
+        
+        int id = grupo.getId();
+        
+        List<Integrante> integranteLista = integrantes.Select();
+        
+        for(Integrante integrante: integranteLista){
+            if(integrante.getGrupo() == id){
+                //integranteGrupo.add(integrante);
+                Usuario usuario = new Usuario();
+                usuario = usuarioMiembro.getUsuario(integrante.getUsuario());
+                usuarios.add(usuario);
+            }
+        }
+        infogrupo.setGrupo(grupo);
+        infogrupo.setMiembros(usuarios);
+        infogrupo.setAdmin(usuarioMiembro.getUsuario(grupo.getAdmin()));
+        
+        mensajeSaliente.setTipo(MTypes.SEND_INFOGRUPO);
+        mensajeSaliente.setContenido(infogrupo);
+        
+        return gson.toJson(mensajeSaliente);
     }
 }
