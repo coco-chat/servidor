@@ -99,4 +99,20 @@ public class IntegrantesController {
         return ultimo.getId() + 1;
     }
     
+    public List<Integer> getListOfGrupos(int usuario) {
+        List<Integer> lista = new ArrayList<>();
+        Integer x;
+        String consulta = "SELECT grupo FROM integrantes WHERE usuario = " + usuario;
+        try {
+            ResultSet rs = db.ComandoSelect(consulta);
+            while(rs.next()) {
+                x = rs.getInt(1);
+                lista.add(x);
+            }
+            return lista;
+        } catch(SQLException ex) {
+            return null;
+        }
+    }
+    
 }
