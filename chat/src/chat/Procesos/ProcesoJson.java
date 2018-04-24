@@ -112,6 +112,11 @@ public class ProcesoJson {
                         PetGrupo.class
                         )
                 );
+            case RQ_DMIEMBRO: 
+                return deleteMiembro(
+                        gson.fromJson(mensajeEntrante.getContenido().toString(),
+                        Integrante.class)
+                );
             case RQ_CGRUPO:
                 return cambiarNombreGrupo(
                         gson.fromJson(mensajeEntrante.getContenido().toString(),
@@ -336,6 +341,19 @@ public class ProcesoJson {
         int result = pet_grupo.Insert(nuevoMiembro);
         if(result == -1)mensajeSaliente.setContenido(471);
         else mensajeSaliente.setContenido(271);
+        return gson.toJson(mensajeSaliente);
+    }
+    
+     public String deleteMiembro(Integrante Miembro) {
+        Comunicacion mensajeSaliente = new Comunicacion();
+        IntegrantesController manejadorIntegrantesGrupo = new IntegrantesController();
+        if (manejadorIntegrantesGrupo.Delete(Miembro) == 1) {
+            mensajeSaliente.setContenido(273);
+            mensajeSaliente.setTipo(MTypes.ACK);
+        } else {
+            mensajeSaliente.setContenido(473);
+            mensajeSaliente.setTipo(MTypes.ACK);
+        }
         return gson.toJson(mensajeSaliente);
     }
     
