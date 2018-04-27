@@ -23,7 +23,7 @@ public class Comunicacion implements Serializable{
         RQ_AMIGOS, RQ_GRUPOS, RQ_INFOGRUPO,
         ACK, ACK_LOGIN,
         SEND_MENSAJE, SEND_GRUPO, SEND_CONECTADOS, SEND_DESCONECTADOS,
-        SEND_AMIGOS, SEND_GRUPOS, SEND_INFOGRUPO
+        SEND_AMIGOS, SEND_GRUPOS, SEND_INFOGRUPO, SEND_MENSAJE_GRUPO
     };
 
     private MTypes tipo;

@@ -201,13 +201,7 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
     
-    /**
-     * Recibe el objeto Mensaje Grupo Model
-     * lo completa, lo guarda en .json --> ACK
-     * @param mensaje
-     * @return 
-     */
-    
+       
     /**
      * Abrir archivo
      * pasar todos en un Lista de objetos
@@ -222,27 +216,64 @@ public class ProcesoJson {
      * @return 
      */
     
-    public String mensajeGrupo(MensajeGrupo mensaje){
+    public String mensajeGrupo(MensajeGrupo mensaje) {
         
-        //Dependiendo de Wero se llenan los integrantes o se reciben en el modelo
+        UsuariosController uCtrl = new UsuariosController();
+        IntegrantesController integrantesGrupo = new IntegrantesController();
+                           
+        Usuario remitente = uCtrl.getUsuario(this.hashTable.get(client));
+        Grupo gpoEnviado = mensaje.getGrupo();
+        
+        mensaje.setRemitente(remitente);
+                        
+        List <Usuario> users = uCtrl.Select();
+        List <Integer> integGpoX = new ArrayList<>();
+        List <Integer> gruposUsuario;
+
+        for (Usuario u : users) {
+            if (u != mensaje.getRemitente()) {
+                gruposUsuario = new ArrayList<>();
+                gruposUsuario = integrantesGrupo.getListOfGrupos(u.getId());
+                for (int gp : gruposUsuario) {
+                    if (gp == gpoEnviado.getId()) { //Menos el mismo usuario
+                        integGpoX.add(u.getId());
+                    }
+                }
+            }                    
+        }
+        
+        mensaje.setIntegrantes(integGpoX);
         
         Comunicacion mensajeSaliente = new Comunicacion();
-        Comunicacion mensajeRemoto = new Comunicacion();
-        
-        List <Integer> listaIntegrantes = mensaje.getIntegrantes();
-        
-        for (int i = 0; i < listaIntegrantes.size(); ++i){
-            Hilo destino = isConectado(mensaje.getIntegrantes().indexOf(i));
-            if (destino != null) {
-                mensajeRemoto.setTipo(MTypes.RQ_MENSAJE_GRUPO);
-                mensajeRemoto.setContenido(mensaje);
-                destino.enviarMensaje(gson.toJson(mensajeRemoto));
-                mensajeSaliente.setContenido(280);
-            } else mensajeSaliente.setContenido(480);
-        }                  
+        mensajeSaliente.setTipo(MTypes.ACK);
+                
+        if (true) {
+            mensajeSaliente.setContenido(280);
+        } else  {
+            mensajeSaliente.setContenido(480);
+        }
         
         return gson.toJson(mensajeSaliente);
-    }          
+        
+    }
+    
+    public String enviarMensajeGrupo (int id_Usuario) {
+        Comunicacion mensajeSaliente = new Comunicacion();                      
+        IntegrantesController integrantesGrupo = new IntegrantesController();
+        
+        List <MensajeGrupo> mensajesPorRecibir = new ArrayList<>(); 
+        List <Integer> gruposPertenece = new ArrayList<>();
+        
+        gruposPertenece = integrantesGrupo.getListOfGrupos(id_Usuario);
+        
+        
+        //Leer del archivo y verificar coincidencias de grupos
+        //Verificar si falta que le llegue un mensaje
+        
+        mensajeSaliente.setContenido(mensajesPorRecibir);
+        mensajeSaliente.setTipo(MTypes.SEND_MENSAJE_GRUPO);
+        return gson.toJson(mensajeSaliente);
+    }
     
     public String logout(){
         hashTable.remove(this.client);
