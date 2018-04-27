@@ -16,6 +16,7 @@ public class MensajeGrupo implements Serializable {
     private Grupo grupo;
     private List <Integer> integrantes;
     private Mensaje mensaje;
+    private Usuario remitente;
     
     public MensajeGrupo () {}
 
@@ -42,6 +43,13 @@ public class MensajeGrupo implements Serializable {
     public void setMensaje(Mensaje mensaje) {
         this.mensaje = mensaje;
     }
-    
-    
+
+    public Usuario getRemitente() {
+        return remitente;
+    }
+
+    public void setRemitente(Usuario remitente) {
+        this.remitente = remitente;
+    }
+       
 }
