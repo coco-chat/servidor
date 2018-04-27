@@ -15,7 +15,7 @@ public class Comunicacion implements Serializable{
     
     public static enum MTypes{
         RQ_LOGIN,RQ_REG, RQ_LOGOUT,
-        RQ_ACTUALIZAR,RQ_MENSAJE,
+        RQ_ACTUALIZAR,RQ_MENSAJE, RQ_MENSAJE_GRUPO,
         RQ_NAMIGO, RQ_DAMIGO, RQ_AAMIGO,
         RQ_APODO, RQ_GRUPO, RQ_CGRUPO,
         RQ_NMIEMBRO, RQ_DMIEMBRO,

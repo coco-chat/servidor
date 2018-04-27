@@ -24,6 +24,7 @@ import chat.Modelos.Amigo;
 import chat.Modelos.Grupo;
 import chat.Modelos.InfoGrupo;
 import chat.Modelos.Integrante;
+import chat.Modelos.MensajeGrupo;
 import chat.Modelos.NuevoGrupo;
 import chat.Modelos.PetGrupo;
 import java.util.ArrayList;
@@ -68,6 +69,12 @@ public class ProcesoJson {
                 return mensaje(
                         gson.fromJson(mensajeEntrante.getContenido().toString(),
                         Mensaje.class
+                        )
+                );
+            case RQ_MENSAJE_GRUPO:
+                return mensajeGrupo(
+                        gson.fromJson(mensajeEntrante.getContenido().toString(),
+                        MensajeGrupo.class
                         )
                 );
             case RQ_NAMIGO:
@@ -193,6 +200,49 @@ public class ProcesoJson {
         }else mensajeSaliente.setContenido(460);
         return gson.toJson(mensajeSaliente);
     }
+    
+    /**
+     * Recibe el objeto Mensaje Grupo Model
+     * lo completa, lo guarda en .json --> ACK
+     * @param mensaje
+     * @return 
+     */
+    
+    /**
+     * Abrir archivo
+     * pasar todos en un Lista de objetos
+     * Verifico si los usuarios conectados se encuentran en algún objeto
+     * Si están se envía el mensaje, y se actualiza el objeto borrando al usuario que se le envío el mensaje
+     * Si no pues nada
+     * 
+     * Se verifican por ultima vez todos los objetos Mensaje Grupo para eliminar los que ya no tengan usuarios a los que enviar mensajes
+     * Se sobre escribe el .json con todos los objetos
+     * 
+     * @param mensaje
+     * @return 
+     */
+    
+    public String mensajeGrupo(MensajeGrupo mensaje){
+        
+        //Dependiendo de Wero se llenan los integrantes o se reciben en el modelo
+        
+        Comunicacion mensajeSaliente = new Comunicacion();
+        Comunicacion mensajeRemoto = new Comunicacion();
+        
+        List <Integer> listaIntegrantes = mensaje.getIntegrantes();
+        
+        for (int i = 0; i < listaIntegrantes.size(); ++i){
+            Hilo destino = isConectado(mensaje.getIntegrantes().indexOf(i));
+            if (destino != null) {
+                mensajeRemoto.setTipo(MTypes.RQ_MENSAJE_GRUPO);
+                mensajeRemoto.setContenido(mensaje);
+                destino.enviarMensaje(gson.toJson(mensajeRemoto));
+                mensajeSaliente.setContenido(280);
+            } else mensajeSaliente.setContenido(480);
+        }                  
+        
+        return gson.toJson(mensajeSaliente);
+    }          
     
     public String logout(){
         hashTable.remove(this.client);
