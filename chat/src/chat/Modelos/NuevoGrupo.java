@@ -6,6 +6,7 @@
 package chat.Modelos;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +18,8 @@ public class NuevoGrupo implements Serializable{
     private List<PetGrupo> integrantes;
 
     public NuevoGrupo() {
+        grupo = new Grupo();
+        integrantes = new ArrayList<>();
     }
 
     public Grupo getGrupo() {

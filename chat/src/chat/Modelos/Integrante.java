@@ -18,7 +18,9 @@ public class Integrante implements Serializable {
     private int usuario;
     
     public Integrante() {
-        
+        id = -1;
+        grupo = -1;
+        usuario = -1;
     }
     
     public void setId(int id) {

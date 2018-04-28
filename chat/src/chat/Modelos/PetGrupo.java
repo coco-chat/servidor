@@ -18,7 +18,9 @@ public class PetGrupo implements Serializable {
     private int usuario;
     
     public PetGrupo() {
-        
+        id = -1;
+        grupo = -1;
+        usuario = -1;
     }
 
     public int getId() {

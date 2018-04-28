@@ -18,9 +18,13 @@ public class Amigo implements Serializable {
     private int amigo2;
     private String apodo1;
     private String apodo2;
-    
+
     public Amigo() {
-        
+        id = -1;
+        amigo1 = -1;
+        amigo2= -1;
+        apodo1=" ";
+        apodo2=" ";
     }
     
     public void setId(int id) {

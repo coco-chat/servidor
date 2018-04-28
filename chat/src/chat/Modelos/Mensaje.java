@@ -17,6 +17,9 @@ public class Mensaje implements Serializable{
     private String contenido;
 
     public Mensaje() {
+        origen = new Usuario();
+        destino = new Usuario();
+        contenido = " ";
     }
 
     public Usuario getOrigen() {

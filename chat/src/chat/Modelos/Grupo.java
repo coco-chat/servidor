@@ -18,7 +18,9 @@ public class Grupo implements Serializable {
     private String nombre;
     
     public Grupo() {
-        
+        id = -1;
+        admin = -1;
+        nombre = " ";
     }
     
     public void setId(int id) {
