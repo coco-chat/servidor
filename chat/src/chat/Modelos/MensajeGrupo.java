@@ -18,7 +18,12 @@ public class MensajeGrupo implements Serializable {
     private Mensaje mensaje;
     private Usuario remitente;
     
-    public MensajeGrupo () {}
+    public MensajeGrupo () {
+        this.grupo = null;
+        this.integrantes = null;
+        this.mensaje = null;
+        this.remitente = null;
+    }
 
     public Grupo getGrupo() {
         return grupo;

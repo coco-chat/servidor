@@ -13,6 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,34 +23,36 @@ import java.util.ArrayList;
 public class ArchivosController {
     
     private File archivo;
-    private DataOutputStream writter;
+    private DataOutputStream writer;
     private DataInputStream reader;
     
     public ArchivosController () {
-        writter = null;
-        reader = null;
-        archivo = null;
+        this.archivo = null;
+        this.writer = null;
+        this.reader = null;
     }
     
     public ArchivosController(String path) {
-        this.archivo = new File(path);
+        archivo = new File(path);
         try {
-            this.reader = new DataInputStream(new FileInputStream(archivo));
-            this.writter = new DataOutputStream(new FileOutputStream(archivo, true));
-        } catch(FileNotFoundException ex) {
-            // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa
+            FileOutputStream x = new FileOutputStream(archivo, true); // Defino esto explicitamente porque de otra manera no se crea el archivo
+            FileInputStream y = new FileInputStream(archivo);
+            writer = new DataOutputStream(x);
+            reader = new DataInputStream(y);
+        } catch(Exception ex) {
+            Logger.getLogger(ArchivosController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
     public boolean writeFile(String cad) {
-        synchronized(writter) {
+        synchronized(writer) {
             try {
-                writter.writeChars(cad);
+                writer.writeChars(cad);
+                return true;
             } catch(IOException ex) {
                 return false;
             }
         }
-        return true;
     }
     
     public ArrayList<String> readFile() {
@@ -67,22 +71,18 @@ public class ArchivosController {
     }
     
     public boolean overwriteFile(ArrayList<String> data) {
-        try {
-            writter = new DataOutputStream(new FileOutputStream(archivo));
-            synchronized(writter) {
-                try {
-                    for(String x : data) {
-                        writter.writeChars(x);
-                    }
-                    return true;
-                } catch(IOException ex) {
-                    return false;
+        synchronized(writer) {
+            try {
+                writer = new DataOutputStream(new FileOutputStream(archivo));
+                for(String x : data) {
+                    writer.writeChars(x);
                 }
+                writer = new DataOutputStream(new FileOutputStream(archivo, true));
+                return true;
+            } catch(Exception ex) {
+                return false;
             }
-        } catch(FileNotFoundException ex) {
-            return false;
         }
     }
-    
     
 }

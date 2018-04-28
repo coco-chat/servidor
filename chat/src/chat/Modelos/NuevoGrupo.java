@@ -17,6 +17,8 @@ public class NuevoGrupo implements Serializable{
     private List<PetGrupo> integrantes;
 
     public NuevoGrupo() {
+        this.grupo = null;
+        this.integrantes = null;
     }
 
     public Grupo getGrupo() {

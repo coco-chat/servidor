@@ -18,7 +18,9 @@ public class PetAmigo implements Serializable {
     private int solicitado;
     
     public PetAmigo() {
-        
+        this.id = "";
+        this.solicitante = 0;
+        this.solicitado = 0;
     }
 
     public String getId() {

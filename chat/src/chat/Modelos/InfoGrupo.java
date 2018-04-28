@@ -18,6 +18,9 @@ public class InfoGrupo implements Serializable{
     private Usuario admin;
 
     public InfoGrupo() {
+        this.grupo = null;
+        this.miembros = null;
+        this.admin = null;
     }
 
     public Grupo getGrupo() {

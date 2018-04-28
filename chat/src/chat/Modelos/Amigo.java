@@ -20,7 +20,11 @@ public class Amigo implements Serializable {
     private String apodo2;
     
     public Amigo() {
-        
+        this.id = 0;
+        this.amigo1 = 0;
+        this.amigo2 = 0;
+        this.apodo1 = "";
+        this.apodo2 = "";
     }
     
     public void setId(int id) {
