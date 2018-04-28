@@ -22,6 +22,9 @@ import java.net.Socket;
 import chat.Modelos.Mensaje;
 import chat.Modelos.Amigo;
 import chat.Modelos.Grupo;
+import chat.Modelos.InfoGrupo;
+import chat.Modelos.Integrante;
+import chat.Modelos.MensajeGrupo;
 import chat.Modelos.NuevoGrupo;
 import chat.Modelos.PetGrupo;
 import java.util.ArrayList;
@@ -68,6 +71,12 @@ public class ProcesoJson {
                         Mensaje.class
                         )
                 );
+            case RQ_MENSAJE_GRUPO:
+                return mensajeGrupo(
+                        gson.fromJson(mensajeEntrante.getContenido().toString(),
+                        MensajeGrupo.class
+                        )
+                );
             case RQ_NAMIGO:
                 return agregarAmigo(
                         gson.fromJson(mensajeEntrante.getContenido().toString(),
@@ -110,6 +119,11 @@ public class ProcesoJson {
                         PetGrupo.class
                         )
                 );
+            case RQ_DMIEMBRO: 
+                return deleteMiembro(
+                        gson.fromJson(mensajeEntrante.getContenido().toString(),
+                        Integrante.class)
+                );
             case RQ_CGRUPO:
                 return cambiarNombreGrupo(
                         gson.fromJson(mensajeEntrante.getContenido().toString(),
@@ -118,6 +132,10 @@ public class ProcesoJson {
                 );
             case RQ_AMIGOS:
                 return getAmigos();
+            case RQ_INFOGRUPO:
+                return getInfoGrupo(
+                        gson.fromJson(mensajeEntrante.getContenido().toString(),Grupo.class)
+                );
             default:
                 return notFound();
         }
@@ -180,6 +198,80 @@ public class ProcesoJson {
             destino.enviarMensaje(gson.toJson(mensajeRemoto));
             mensajeSaliente.setContenido(260);
         }else mensajeSaliente.setContenido(460);
+        return gson.toJson(mensajeSaliente);
+    }
+    
+       
+    /**
+     * Abrir archivo
+     * pasar todos en un Lista de objetos
+     * Verifico si los usuarios conectados se encuentran en algún objeto
+     * Si están se envía el mensaje, y se actualiza el objeto borrando al usuario que se le envío el mensaje
+     * Si no pues nada
+     * 
+     * Se verifican por ultima vez todos los objetos Mensaje Grupo para eliminar los que ya no tengan usuarios a los que enviar mensajes
+     * Se sobre escribe el .json con todos los objetos
+     * 
+     * @param mensaje
+     * @return 
+     */
+    
+    public String mensajeGrupo(MensajeGrupo mensaje) {
+        
+        UsuariosController uCtrl = new UsuariosController();
+        IntegrantesController integrantesGrupo = new IntegrantesController();
+                           
+        Usuario remitente = uCtrl.getUsuario(this.hashTable.get(client));
+        Grupo gpoEnviado = mensaje.getGrupo();
+        
+        mensaje.setRemitente(remitente);
+                        
+        List <Usuario> users = uCtrl.Select();
+        List <Integer> integGpoX = new ArrayList<>();
+        List <Integer> gruposUsuario;
+
+        for (Usuario u : users) {
+            if (u != mensaje.getRemitente()) {
+                gruposUsuario = new ArrayList<>();
+                gruposUsuario = integrantesGrupo.getListOfGrupos(u.getId());
+                for (int gp : gruposUsuario) {
+                    if (gp == gpoEnviado.getId()) { //Menos el mismo usuario
+                        integGpoX.add(u.getId());
+                    }
+                }
+            }                    
+        }
+        
+        mensaje.setIntegrantes(integGpoX);
+        
+        Comunicacion mensajeSaliente = new Comunicacion();
+        mensajeSaliente.setTipo(MTypes.ACK);
+                
+        if (true) {
+            mensajeSaliente.setContenido(280);
+        } else  {
+            mensajeSaliente.setContenido(480);
+        }
+        
+        return gson.toJson(mensajeSaliente);
+        
+    }
+    
+    public String enviarMensajeGrupo (int id_Usuario) {
+        Comunicacion mensajeSaliente = new Comunicacion();                      
+        IntegrantesController integrantesGrupo = new IntegrantesController();
+        
+        List <MensajeGrupo> mensajesPorRecibir = new ArrayList<>(); 
+        List <Integer> gruposPertenece = new ArrayList<>();
+        
+        gruposPertenece = integrantesGrupo.getListOfGrupos(id_Usuario);
+        
+        
+        //Leer del archivo y verificar coincidencias de grupos
+        //Verificar si falta que le llegue un mensaje
+        
+        mensajeSaliente.setContenido(mensajesPorRecibir);
+        mensajeSaliente.setTipo(MTypes.SEND_MENSAJE_GRUPO);
         return gson.toJson(mensajeSaliente);
     }
     
@@ -333,6 +425,19 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
     
+     public String deleteMiembro(Integrante Miembro) {
+        Comunicacion mensajeSaliente = new Comunicacion();
+        IntegrantesController manejadorIntegrantesGrupo = new IntegrantesController();
+        if (manejadorIntegrantesGrupo.Delete(Miembro) == 1) {
+            mensajeSaliente.setContenido(273);
+            mensajeSaliente.setTipo(MTypes.ACK);
+        } else {
+            mensajeSaliente.setContenido(473);
+            mensajeSaliente.setTipo(MTypes.ACK);
+        }
+        return gson.toJson(mensajeSaliente);
+    }
+    
     public String cambiarNombreGrupo (Grupo grupo) {
         Comunicacion mensajeSaliente = new Comunicacion();
         GruposController cambiarNombreIntermediario = new GruposController();
@@ -364,5 +469,34 @@ public class ProcesoJson {
         Comunicacion mensajeSaliente = new Comunicacion();
         //obtener grupos mediante el controlador
         return "";
+    }
+    public String getInfoGrupo(Grupo grupo){
+        Comunicacion mensajeSaliente = new Comunicacion();
+        UsuariosController usuarioMiembro = new UsuariosController();
+        List<Usuario> usuarios = new ArrayList<Usuario>();
+     
+        IntegrantesController integrantes = new IntegrantesController();
+        InfoGrupo infogrupo = new InfoGrupo();
+        
+        int id = grupo.getId();
+        
+        List<Integrante> integranteLista = integrantes.Select();
+        
+        for(Integrante integrante: integranteLista){
+            if(integrante.getGrupo() == id){
+                //integranteGrupo.add(integrante);
+                Usuario usuario = new Usuario();
+                usuario = usuarioMiembro.getUsuario(integrante.getUsuario());
+                usuarios.add(usuario);
+            }
+        }
+        infogrupo.setGrupo(grupo);
+        infogrupo.setMiembros(usuarios);
+        infogrupo.setAdmin(usuarioMiembro.getUsuario(grupo.getAdmin()));
+        
+        mensajeSaliente.setTipo(MTypes.SEND_INFOGRUPO);
+        mensajeSaliente.setContenido(infogrupo);
+        
+        return gson.toJson(mensajeSaliente);
     }
 }

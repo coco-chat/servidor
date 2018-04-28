@@ -97,4 +97,20 @@ public class UsuariosController {
         return ultimo.getId() + 1;
     }
     
+    public Usuario getUsuario(int id) {
+        Usuario x = new Usuario();
+        try {
+            String consulta = "SELECT * FROM usuarios WHERE id = " + id;
+            ResultSet rs = db.ComandoSelect(consulta);
+            while(rs.next()) {
+                x.setId(id);
+                x.setUsername(rs.getString(2));
+                x.setPassword(rs.getString(3));
+            }
+            return x;
+        } catch(SQLException ex) {
+            return null;
+        }
+    }
+    
 }
