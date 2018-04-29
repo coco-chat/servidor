@@ -6,6 +6,7 @@
 package chat.Procesos;
 
 import chat.Controladores.AmigosController;
+import chat.Controladores.ArchivosController;
 import chat.Modelos.Comunicacion;
 import chat.Modelos.Comunicacion.MTypes;
 import chat.Controladores.CuentasController;
@@ -206,7 +207,7 @@ public class ProcesoJson {
        
     /**
      * Abrir archivo
-     * pasar todos en un Lista de objetos
+     * pasar todos en un Lista de objetos (strings)
      * Verifico si los usuarios conectados se encuentran en algún objeto
      * Si están se envía el mensaje, y se actualiza el objeto borrando al usuario que se le envío el mensaje
      * Si no pues nada
@@ -218,6 +219,62 @@ public class ProcesoJson {
      * @return 
      */
     
+    
+     /** Gracias Vanya <3
+     */
+    /** 
+     * Este método recibe un objeto de tipo mensaje de grupo que será almacenado
+     * de ser enviado a todos los integrantes de grupo.
+     * 
+     * 
+     * Primero se crean los objetos "uCtrl", de clase UsuariosController, y 
+     * "integrantesGrupo", de clase IntegrantesController. En seguida se crea 
+     * un objeto de tipo Usuario con nombre "remitente", al que se le dará el 
+     * valor del usuario que haya enviado el mensaje, mediante la búsqueda del
+     * id de usuario de la tabla usuarios de la base de datos. Este id es 
+     * obtenido de la tabla hash de usuarios conectados buscando el Hilo del 
+     * cliente que envió la solicitud de envío de mensaje de grupo. Luego de 
+     * esto, el objeto "remitente" es enviado al método setRemitente del objeto 
+     * "mensaje".
+     * Después se crea un objeto de tipo Grupo, que toma el valor del grupo al 
+     * que se enviará el mensaje; éste que se obtiene de la propiedad grupo del
+     * objeto "mensaje". 
+     * 
+     * Después de esto se declaran tres listas:
+     * - una de tipo Usuario de nombre "users"  para almacenar todos los 
+     *  usuarios registrados en la base de datos. 
+     * - otra de tipo Integer de nombre "integGpoX" para almacenar los 
+     * integrantes pertenecientes al grupo enviado en el objeto "mensaje"
+     * - y otra también de tipo integer que será utilizada para almacenar el id
+     * de los grupos en los que un determinado usuario es integrante.
+     * 
+     * La primera y segunda lista son instanciadas en el momento de su declaración,
+     * la primera con el resultado de la ejecución del método Select del objeto 
+     * "uCtrl" y la segunda creando un nuevo espacio de memoria de tipo ArrayList.
+     * 
+     * Después de esto se crea un ciclo iterativo que será ejecutado por cada
+     * elemento (usuario) existente en la lista "integGpoX". Creará una nueva
+     * instancia del objeto "gruposUsuario" cada vez que se ejecute, para 
+     * almacenar todos id de los grupos a los que pertenece el usuario iterado en
+     * el ciclo iterativo, con ello se ejecutará un ciclo iterativo anidado por
+     * cada grupo al que pertenece determinado usuario para verificar dentro de 
+     * este si el grupo al que será enviado el mensaje se encuentra dentro de la
+     * lista de grupos a los que pertenece el usuario iterado. Si es cierto el 
+     * usuario es agregado a la lista integ "integGpoX".
+     * 
+     * Después de terminar el ciclo se establecen los integrantes al objeto 
+     * "mensaje" invocando el método setIntegrantes enviando como parámetro la
+     * lista de nombre "integGpoX".
+     * 
+     * Se instancía un objeto de tipo Comunicacion con nombre "mensajeSaliente"
+     * para enviar un mensaje de reconocimiento al usuario que envió el mensaje
+     * de grupo, que especificará si se pudo almacenar el mensaje en el servidor
+     * para ser después enviado a los usuario conectados.
+     * 
+     * 
+     * @param mensaje
+     * @return 
+     */
     public String mensajeGrupo(MensajeGrupo mensaje) {
         
         UsuariosController uCtrl = new UsuariosController();
@@ -227,6 +284,7 @@ public class ProcesoJson {
         Grupo gpoEnviado = mensaje.getGrupo();
         
         mensaje.setRemitente(remitente);
+        mensaje.getMensaje().setOrigen(remitente);
                         
         List <Usuario> users = uCtrl.Select();
         List <Integer> integGpoX = new ArrayList<>();
@@ -247,34 +305,83 @@ public class ProcesoJson {
         mensaje.setIntegrantes(integGpoX);
         
         Comunicacion mensajeSaliente = new Comunicacion();
-        mensajeSaliente.setTipo(MTypes.ACK);
+        mensajeSaliente.setTipo(MTypes.ACK);               
                 
-        if (true) {
+        ArchivosController mensajesGposFile = new ArchivosController(
+                System.getProperty("user.dir") + "\\mensajesGrupos.json"
+        );
+        
+        if (mensajesGposFile.writeFile(gson.toJson(mensaje))) {
+            //Mensaje almacenado
             mensajeSaliente.setContenido(280);
-        } else  {
-            mensajeSaliente.setContenido(480);
-        }
+            
+            
+            //Por cada integrante de "mensaje" invocar enviarMensajeGrupo(id_U)
+            //Enviar mensaje a integrantes
+            //enviarMensajeGrupo ()
+            //Ver usuarios conectados
+            
+        } else {
+            mensajeSaliente.setContenido(480);//Mensaje no almacenado ni enviado
+        }        
         
         return gson.toJson(mensajeSaliente);
         
     }
     
-    public String enviarMensajeGrupo (int id_Usuario) {
-        Comunicacion mensajeSaliente = new Comunicacion();                      
-        IntegrantesController integrantesGrupo = new IntegrantesController();
+    public String enviarMensajeIntegranteGrupo (int id_Usuario) {
+        Comunicacion mensajeSaliente = new Comunicacion();            
+              
+        Hilo destino = isConectado(id_Usuario);
         
-        List <MensajeGrupo> mensajesPorRecibir = new ArrayList<>(); 
-        List <Integer> gruposPertenece = new ArrayList<>();
+        if(destino != null) {       //Usuario conectado
+            int smsEnviados = 0;
+            IntegrantesController integrantesGrupo = new IntegrantesController();
+            ArchivosController fileManager = new ArchivosController();            
+            
+            List <Integer> gruposPertenece = integrantesGrupo.getListOfGrupos(id_Usuario);
+            List <String> mensajesPorRecibir = fileManager.readFile();             
+            List <MensajeGrupo> smsPorRecibir = new ArrayList<>();
+                        
+            //Los mensajes de grupos que recibir
+            for (String gpSmsOnStr : mensajesPorRecibir) {
+                MensajeGrupo smsParaAñadir = new MensajeGrupo();
+                smsParaAñadir = gson.fromJson(gpSmsOnStr, MensajeGrupo.class);
+                smsPorRecibir.add(smsParaAñadir);
+            }
+            
+            if (smsPorRecibir.size() > 0) {
+                for (MensajeGrupo smsOnObj : smsPorRecibir) {                    
+                    for (Integer gpoPertenece : gruposPertenece) {
+                        if (gpoPertenece == smsOnObj.getGrupo().getId()) {
+                            // Enviar mensaje y borrar de usuario de mensajeGrupo
+                            
+                            Comunicacion mensajeRemoto = new Comunicacion();            
+                            mensajeRemoto.setTipo(MTypes.SEND_MENSAJE_GRUPO);
+                            mensajeRemoto.setContenido(smsOnObj.getMensaje());
+                            
+                            destino.enviarMensaje(gson.toJson(mensajeRemoto));
+                            //smsOnObj.getIntegrantes().remove(destino); ?
+                            //Eliminar Usuario de smsOnObj
+                            
+                            
+                            ++smsEnviados;
+                        }
+                    }
+                }
+                //convertir los objetos de smsPorRecibir a str
+                //mensajesPorRecibir = new ArrayList<>(); Str de smsPorRecibir --> .add               
+                //invocar overwriteFile(mensajesPorRecibir)
+            } else if (smsPorRecibir.size() < 1) {                
+                mensajeSaliente.setTipo(MTypes.ACK);
+                mensajeSaliente.setContenido(482);  //No hay mensajes de grupo que enviar                          
+            }                                       
+        } else {  //Usuario no conectado
+            mensajeSaliente.setTipo(MTypes.ACK);
+            mensajeSaliente.setContenido(481);   
+        }
+        return gson.toJson(mensajeSaliente);        
         
-        gruposPertenece = integrantesGrupo.getListOfGrupos(id_Usuario);
-        
-        
-        //Leer del archivo y verificar coincidencias de grupos
-        //Verificar si falta que le llegue un mensaje
-        
-        mensajeSaliente.setContenido(mensajesPorRecibir);
-        mensajeSaliente.setTipo(MTypes.SEND_MENSAJE_GRUPO);
-        return gson.toJson(mensajeSaliente);
     }
     
     public String logout(){
