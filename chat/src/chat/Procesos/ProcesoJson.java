@@ -136,6 +136,8 @@ public class ProcesoJson {
                 return getInfoGrupo(
                         gson.fromJson(contenido,Grupo.class)
                 );
+            case RQ_GRUPOS:
+                return getGrupos();
             default:
                 return notFound();
         }
@@ -497,9 +499,20 @@ public class ProcesoJson {
     
     public String getGrupos(){
         IntegrantesController integrantesController = new IntegrantesController();
+        GruposController gruposController = new GruposController();
         Comunicacion mensajeSaliente = new Comunicacion();
-        //obtener grupos mediante el controlador
-        return "";
+        List<Integer> idsGrupo = integrantesController.getListOfGrupos(hashTable.get(client));
+        List<Grupo> gruposAll = gruposController.Select();
+        List<Grupo> result = new ArrayList<>();
+        
+        mensajeSaliente.setTipo(MTypes.SEND_GRUPOS);
+        for(Grupo grupo:gruposAll){
+            for(Integer id:idsGrupo){
+                if(grupo.getId()==id)result.add(grupo);
+            }
+        }
+        mensajeSaliente.setContenido(result);
+        return gson.toJson(mensajeSaliente);
     }
     public String getInfoGrupo(Grupo grupo){
         Comunicacion mensajeSaliente = new Comunicacion();

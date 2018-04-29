@@ -3,23 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
-            <file>file:/C:/Users/kevin/Documents/servidor/chat/src/chat/Procesos/ProcesoJson.java</file>
             <file>file:/C:/Users/kevin/Documents/servidor/chat/src/chat/Conexion.java</file>
-=======
-            <file>file:/C:/Users/juanc/Documents/GitHub/servidor/chat/src/chat/Modelos/MensajeGrupo.java</file>
-            <file>file:/C:/Users/juanc/Documents/GitHub/servidor/chat/src/chat/Modelos/NuevoGrupo.java</file>
-            <file>file:/C:/Users/juanc/Documents/GitHub/servidor/chat/src/chat/Modelos/Usuario.java</file>
-            <file>file:/C:/Users/juanc/Documents/GitHub/servidor/chat/src/chat/Modelos/Amigo.java</file>
-            <file>file:/C:/Users/juanc/Documents/GitHub/servidor/chat/src/chat/Controladores/ArchivosController.java</file>
-            <file>file:/C:/Users/juanc/Documents/GitHub/servidor/chat/src/chat/Modelos/Comunicacion.java</file>
-            <file>file:/C:/Users/juanc/Documents/GitHub/servidor/chat/src/chat/Modelos/Mensaje.java</file>
-            <file>file:/C:/Users/juanc/Documents/GitHub/servidor/chat/src/chat/Modelos/PetGrupo.java</file>
-            <file>file:/C:/Users/juanc/Documents/GitHub/servidor/chat/src/chat/Modelos/PetAmigo.java</file>
-            <file>file:/C:/Users/juanc/Documents/GitHub/servidor/chat/src/chat/Modelos/Grupo.java</file>
-            <file>file:/C:/Users/juanc/Documents/GitHub/servidor/chat/src/chat/Modelos/InfoGrupo.java</file>
-            <file>file:/C:/Users/juanc/Documents/GitHub/servidor/chat/src/chat/Modelos/Integrante.java</file>
->>>>>>> e8151f6abd0df2bcf643027106e261370d98ba24
+            <file>file:/C:/Users/kevin/Documents/servidor/chat/src/chat/Chat.java</file>
+            <file>file:/C:/Users/kevin/Documents/servidor/chat/src/chat/Modelos/Comunicacion.java</file>
+            <file>file:/C:/Users/kevin/Documents/servidor/chat/src/chat/Modelos/Usuario.java</file>
+            <file>file:/C:/Users/kevin/Documents/servidor/chat/src/chat/Procesos/Hilo.java</file>
+            <file>file:/C:/Users/kevin/Documents/servidor/chat/src/chat/Modelos/Mensaje.java</file>
+            <file>file:/C:/Users/kevin/Documents/servidor/chat/src/chat/Procesos/ProcesoJson.java</file>
         </group>
     </open-files>
 </project-private>
