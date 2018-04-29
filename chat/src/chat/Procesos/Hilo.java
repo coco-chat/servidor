@@ -8,7 +8,10 @@ package chat.Procesos;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,14 +54,14 @@ public class Hilo implements Runnable{
                 ConsoleInfo.accion(
                         id,
                         "Recivido",
-                        client.getLocalAddress().toString(),
+                        client.getRemoteSocketAddress().toString(),
                         data
                 );
                 data = procesador.procesar(data);
                 ConsoleInfo.accion(
                         id, 
                         "enviado", 
-                        client.getLocalAddress().toString(), 
+                        client.getRemoteSocketAddress().toString(), 
                         data
                 );
                 writer.writeUTF(data);
@@ -81,14 +84,27 @@ public class Hilo implements Runnable{
     }
     
     public void enviarMensaje(String mensaje){
+        String ip = client.getRemoteSocketAddress().toString();
+        String[] dir;
+        Socket cliente;
+        DataOutputStream mandar;
         try {
+            dir = ip.split(":");
+            dir[0] = dir[0].replace("/", "");
+            System.out.println(dir[0]);
+            cliente = new Socket(dir[0], 7654);
+            mandar = new DataOutputStream(cliente.getOutputStream());
+            mandar.writeUTF(mensaje);
+            
             ConsoleInfo.accion(
                 id, 
                 "enviado", 
-                client.getLocalAddress().toString(), 
+                ip, 
                 mensaje
             );
-            this.writer.writeUTF(mensaje);
+            
+            mandar.close();
+            cliente.close();
         } catch (IOException ex) {
             ConsoleInfo.error(this.id,"Enviar datos","Mensaje no enviado");
         }

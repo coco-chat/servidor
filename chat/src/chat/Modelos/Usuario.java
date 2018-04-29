@@ -19,8 +19,8 @@ public class Usuario implements Serializable {
     
     public Usuario() {
         this.id = 0;
-        this.username = "";
-        this.password = "";
+        this.username = " ";
+        this.password = " ";
     }
 
     public int getId() {
