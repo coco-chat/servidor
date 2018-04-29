@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,7 +36,8 @@ public class ArchivosController {
     public ArchivosController(String path) {
         archivo = new File(path);
         try {
-            FileOutputStream x = new FileOutputStream(archivo, true); // Defino esto explicitamente porque de otra manera no se crea el archivo
+            // Defino esto explicitamente porque de otra manera no se crea el archivo
+            FileOutputStream x = new FileOutputStream(archivo, true);
             FileInputStream y = new FileInputStream(archivo);
             writer = new DataOutputStream(x);
             reader = new DataInputStream(y);
@@ -47,7 +49,7 @@ public class ArchivosController {
     public boolean writeFile(String cad) {
         synchronized(writer) {
             try {
-                writer.writeChars(cad);
+                writer.writeUTF(cad);
                 return true;
             } catch(IOException ex) {
                 return false;
@@ -56,12 +58,11 @@ public class ArchivosController {
     }
     
     public ArrayList<String> readFile() {
-        ArrayList<String> lista = new ArrayList<>();
-        String linea;
         synchronized(reader) {
+            ArrayList<String> lista = new ArrayList<>();
             try {
-                while((linea = reader.readUTF()) != null) {
-                    lista.add(linea);
+                while(reader.available() > 0) {
+                    lista.add(reader.readUTF());
                 }
                 return lista;
             } catch(IOException ex) {
@@ -70,18 +71,28 @@ public class ArchivosController {
         }
     }
     
-    public boolean overwriteFile(ArrayList<String> data) {
+    public boolean overwriteFile(List<String> data) {
         synchronized(writer) {
             try {
                 writer = new DataOutputStream(new FileOutputStream(archivo));
-                for(String x : data) {
-                    writer.writeChars(x);
+                for(String cad : data) {
+                    writer.writeUTF(cad);
                 }
                 writer = new DataOutputStream(new FileOutputStream(archivo, true));
                 return true;
             } catch(Exception ex) {
                 return false;
             }
+        }
+    }
+    
+    public boolean close() {
+        try {
+            writer.close();
+            reader.close();
+            return true;
+        } catch(IOException ex) {
+            return false;
         }
     }
     

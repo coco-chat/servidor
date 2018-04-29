@@ -31,7 +31,7 @@ public class Comunicacion implements Serializable{
     
     public Comunicacion() {
         tipo = MTypes.ACK;
-        contenido = null;
+        contenido = " ";
     }
 
     /**

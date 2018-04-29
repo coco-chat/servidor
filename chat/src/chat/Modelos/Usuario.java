@@ -18,9 +18,9 @@ public class Usuario implements Serializable {
     private String password;
     
     public Usuario() {
-        this.id = 0;
-        this.username = "";
-        this.password = "";
+        this.id = -1;
+        this.username = " ";
+        this.password = " ";
     }
 
     public int getId() {
