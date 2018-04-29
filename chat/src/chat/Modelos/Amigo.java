@@ -22,9 +22,9 @@ public class Amigo implements Serializable {
     public Amigo() {
         id = -1;
         amigo1 = -1;
-        amigo2= -1;
-        apodo1=" ";
-        apodo2=" ";
+        amigo2 = -1;
+        apodo1 = " ";
+        apodo2 = " ";
     }
     
     public void setId(int id) {
