@@ -53,14 +53,14 @@ public class Hilo implements Runnable{
                 data = reader.readUTF();
                 ConsoleInfo.accion(
                         id,
-                        "Recivido",
+                        "Recibido",
                         client.getRemoteSocketAddress().toString(),
                         data
                 );
                 data = procesador.procesar(data);
                 ConsoleInfo.accion(
                         id, 
-                        "enviado", 
+                        "Enviado", 
                         client.getRemoteSocketAddress().toString(), 
                         data
                 );
@@ -91,14 +91,13 @@ public class Hilo implements Runnable{
         try {
             dir = ip.split(":");
             dir[0] = dir[0].replace("/", "");
-            System.out.println(dir[0]);
             cliente = new Socket(dir[0], 7654);
             mandar = new DataOutputStream(cliente.getOutputStream());
             mandar.writeUTF(mensaje);
             
             ConsoleInfo.accion(
                 id, 
-                "enviado", 
+                "Enviado", 
                 ip, 
                 mensaje
             );

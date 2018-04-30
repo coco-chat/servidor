@@ -108,7 +108,7 @@ public class ProcesoJson {
                 return getConectados();
             case RQ_DESCONECTADOS:
                 return getDesconectados();
-            case RQ_GRUPO:
+            case RQ_CGRUPO:
                 return crearGrupo(
                         gson.fromJson(contenido,
                         NuevoGrupo.class
@@ -125,7 +125,7 @@ public class ProcesoJson {
                         gson.fromJson(contenido,
                         Integrante.class)
                 );
-            case RQ_CGRUPO:
+            case RQ_GRUPO:
                 return cambiarNombreGrupo(
                         gson.fromJson(contenido,
                         Grupo.class
@@ -144,6 +144,8 @@ public class ProcesoJson {
                     return enviarMensajesIntegranteGrupo(
                             gson.fromJson(contenido,Usuario.class)
                     );
+            case RQ_LUSUARIOS:
+                    return getUsuarios();
             default:
                 return notFound();
         }
@@ -437,10 +439,15 @@ public class ProcesoJson {
         GruposController grupos = new GruposController();
         PetGruposController petGrupos = new PetGruposController();
         Comunicacion mensajeSaliente = new Comunicacion();
+        IntegrantesController integrantesController = new IntegrantesController();
+        Integrante integrante = new Integrante();
         mensajeSaliente.setTipo(MTypes.ACK);
         
         nuevoGrupo.getGrupo().setAdmin(hashTable.get(client));
         int id = grupos.Insert(nuevoGrupo.getGrupo());
+        integrante.setGrupo(id);
+        integrante.setUsuario(hashTable.get(client));
+        integrantesController.Insert(integrante);
         for(PetGrupo pet: nuevoGrupo.getIntegrantes()){
             pet.setGrupo(id);
             petGrupos.Insert(pet);
@@ -624,7 +631,7 @@ public class ProcesoJson {
         mensajeSaliente.setContenido(result);
         return gson.toJson(mensajeSaliente);
     }
-    
+   
     public String getGrupos(){
         IntegrantesController integrantesController = new IntegrantesController();
         GruposController gruposController = new GruposController();
@@ -642,6 +649,22 @@ public class ProcesoJson {
         mensajeSaliente.setContenido(result);
         return gson.toJson(mensajeSaliente);
     }
+   
+    public String getUsuarios(){
+        UsuariosController usuariosController = new UsuariosController();
+        Comunicacion mensajeSaliente = new Comunicacion();
+        List<Usuario> usuarios = usuariosController.Select();
+        List<Usuario> result = new ArrayList<>();
+        int id = hashTable.get(client);
+        for(Usuario usuario:usuarios){
+            usuario.setPassword(" ");
+            if(usuario.getId()!=id)result.add(usuario);
+        }
+        mensajeSaliente.setTipo(MTypes.SEND_LUSUARIOS);
+        mensajeSaliente.setContenido(result);
+        return gson.toJson(mensajeSaliente);
+    }
+    
     public String getInfoGrupo(Grupo grupo){
         Comunicacion mensajeSaliente = new Comunicacion();
         UsuariosController usuarioMiembro = new UsuariosController();
