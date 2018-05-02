@@ -131,8 +131,10 @@ public class ProcesoJson {
                         Grupo.class
                         )
                 );
-            case RQ_AMIGOS:
-                return getAmigos();
+            case RQ_AMIGOSCON:
+                return getAmigosCon();
+            case RQ_AMIGOSDES:
+                return getAmigosDes();
             case RQ_INFOGRUPO:
                 return getInfoGrupo(
                         gson.fromJson(contenido,Grupo.class)
@@ -544,15 +546,23 @@ public class ProcesoJson {
     
     public String getConectados(){
         UsuariosController usuarios = new UsuariosController();
+        AmigosController amigosController = new AmigosController();
         List<Usuario> usuariosList = usuarios.Select();
         List<Usuario> result = new ArrayList<>();
+        List<Amigo> amigos = amigosController.Select();
         Comunicacion mensajeSaliente = new Comunicacion();
         mensajeSaliente.setTipo(MTypes.SEND_CONECTADOS);
         int id = this.hashTable.get(this.client);
+        int idUsr;
         for(Usuario usuario: usuariosList){
             if(isConectado(usuario.getId())!=null && usuario.getId() != id){
-                usuario.setPassword(" ");
-                result.add(usuario);
+                idUsr = usuario.getId();
+                for(Amigo amigo: amigos){
+                     if(amigo.getAmigo1()!=idUsr&amigo.getAmigo2()!=idUsr){
+                        usuario.setPassword(" ");
+                        result.add(usuario);
+                    }
+                }
             }
         }
         mensajeSaliente.setContenido(result);
@@ -561,14 +571,23 @@ public class ProcesoJson {
     
     public String getDesconectados(){
         UsuariosController usuarios = new UsuariosController();
+        AmigosController amigosController = new AmigosController();
         List<Usuario> usuariosList = usuarios.Select();
         List<Usuario> result = new ArrayList<>();
+        List<Amigo> amigos = amigosController.Select();
         Comunicacion mensajeSaliente = new Comunicacion();
         mensajeSaliente.setTipo(MTypes.SEND_CONECTADOS);
+        int id;
         for(Usuario usuario: usuariosList){
             if(isConectado(usuario.getId())== null){
-                usuario.setPassword(" ");
-                result.add(usuario);
+                id = usuario.getId();
+                for(Amigo amigo:amigos){
+                    if(amigo.getAmigo1()!=id&amigo.getAmigo2()!=id){
+                        usuario.setPassword(" ");
+                        result.add(usuario);
+                    }
+                }
+                
             }
         }
         mensajeSaliente.setContenido(result);
@@ -612,7 +631,7 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
     
-    public String getAmigos(){
+    public String getAmigosCon(){
         AmigosController amigosController = new AmigosController();
         Comunicacion mensajeSaliente = new Comunicacion();
         int id = hashTable.get(client);
@@ -620,11 +639,15 @@ public class ProcesoJson {
         List<Amigo> result = new ArrayList<>();
         for(Amigo amigo:amigosAll){
             if(amigo.getAmigo1()==id){
-                amigo.setAmigo1(-1);
-                result.add(amigo);
+                if(isConectado(amigo.getAmigo2())!= null){
+                    amigo.setAmigo1(-1);
+                    result.add(amigo);
+                }
             }else if(amigo.getAmigo2()==id){
-                amigo.setAmigo2(-1);
-                result.add(amigo);
+                if(isConectado(amigo.getAmigo1())!=null){
+                    amigo.setAmigo2(-1);
+                    result.add(amigo);
+                }
             }
         }
         mensajeSaliente.setTipo(MTypes.SEND_AMIGOS);
@@ -692,6 +715,30 @@ public class ProcesoJson {
         mensajeSaliente.setTipo(MTypes.SEND_INFOGRUPO);
         mensajeSaliente.setContenido(infogrupo);
         
+        return gson.toJson(mensajeSaliente);
+    }
+    
+    public String getAmigosDes(){
+         AmigosController amigosController = new AmigosController();
+        Comunicacion mensajeSaliente = new Comunicacion();
+        int id = hashTable.get(client);
+        List<Amigo> amigosAll = amigosController.Select();
+        List<Amigo> result = new ArrayList<>();
+        for(Amigo amigo:amigosAll){
+            if(amigo.getAmigo1()==id){
+                if(isConectado(amigo.getAmigo2())== null){
+                    amigo.setAmigo1(-1);
+                    result.add(amigo);
+                }
+            }else if(amigo.getAmigo2()==id){
+                if(isConectado(amigo.getAmigo1())==null){
+                    amigo.setAmigo2(-1);
+                    result.add(amigo);
+                }
+            }
+        }
+        mensajeSaliente.setTipo(MTypes.SEND_AMIGOS);
+        mensajeSaliente.setContenido(result);
         return gson.toJson(mensajeSaliente);
     }
 }
