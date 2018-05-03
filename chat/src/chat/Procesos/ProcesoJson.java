@@ -204,6 +204,7 @@ public class ProcesoJson {
         Comunicacion mensajeSaliente = new Comunicacion();
         Comunicacion mensajeRemoto = new Comunicacion();
         Hilo destino = isConectado(mensaje.getDestino().getId());
+        mensaje.getOrigen().setId(hashTable.get(client));
         if(destino!=null){
             mensajeRemoto.setTipo(MTypes.SEND_MENSAJE);
             mensajeRemoto.setContenido(mensaje);
@@ -550,18 +551,31 @@ public class ProcesoJson {
         List<Usuario> usuariosList = usuarios.Select();
         List<Usuario> result = new ArrayList<>();
         List<Amigo> amigos = amigosController.Select();
+        List<Integer> amigosUsuario = new ArrayList<>();
         Comunicacion mensajeSaliente = new Comunicacion();
         mensajeSaliente.setTipo(MTypes.SEND_CONECTADOS);
-        int id = this.hashTable.get(this.client);
-        int idUsr;
+        
+        int id=hashTable.get(client);
+        boolean cont = false;
+        for(Amigo amigo:amigos){
+            if(amigo.getAmigo1()==id)
+                amigosUsuario.add(amigo.getAmigo2());
+            else if(amigo.getAmigo2()==id)
+                amigosUsuario.add(amigo.getAmigo1());
+        }
+        
         for(Usuario usuario: usuariosList){
             if(isConectado(usuario.getId())!=null && usuario.getId() != id){
-                idUsr = usuario.getId();
-                for(Amigo amigo: amigos){
-                     if(amigo.getAmigo1()!=idUsr&amigo.getAmigo2()!=idUsr){
-                        usuario.setPassword(" ");
-                        result.add(usuario);
+                cont = false;
+                for(Integer amigo:amigosUsuario){
+                    if(amigo == usuario.getId()){
+                        cont = true;
+                        break;
                     }
+                }
+                if(cont == false){
+                    usuario.setPassword(" ");
+                    result.add(usuario);
                 }
             }
         }
@@ -575,17 +589,31 @@ public class ProcesoJson {
         List<Usuario> usuariosList = usuarios.Select();
         List<Usuario> result = new ArrayList<>();
         List<Amigo> amigos = amigosController.Select();
+        List<Integer> amigosUsuario = new ArrayList<>();
         Comunicacion mensajeSaliente = new Comunicacion();
-        mensajeSaliente.setTipo(MTypes.SEND_CONECTADOS);
-        int id;
+        mensajeSaliente.setTipo(MTypes.SEND_DESCONECTADOS);
+        
+        int id=hashTable.get(client);
+        boolean cont = false;
+        for(Amigo amigo:amigos){
+            if(amigo.getAmigo1()==id)
+                amigosUsuario.add(amigo.getAmigo2());
+            else if(amigo.getAmigo2()==id)
+                amigosUsuario.add(amigo.getAmigo1());
+        }
+        
         for(Usuario usuario: usuariosList){
             if(isConectado(usuario.getId())== null){
-                id = usuario.getId();
-                for(Amigo amigo:amigos){
-                    if(amigo.getAmigo1()!=id&amigo.getAmigo2()!=id){
-                        usuario.setPassword(" ");
-                        result.add(usuario);
+                cont = false;
+                for(Integer amigo:amigosUsuario){
+                    if(amigo == usuario.getId()){
+                        cont = true;
+                        break;
                     }
+                }
+                if(cont == false){
+                    usuario.setPassword(" ");
+                    result.add(usuario);
                 }
                 
             }
@@ -650,7 +678,7 @@ public class ProcesoJson {
                 }
             }
         }
-        mensajeSaliente.setTipo(MTypes.SEND_AMIGOS);
+        mensajeSaliente.setTipo(MTypes.SEND_AMIGOSCON);
         mensajeSaliente.setContenido(result);
         return gson.toJson(mensajeSaliente);
     }
@@ -737,7 +765,7 @@ public class ProcesoJson {
                 }
             }
         }
-        mensajeSaliente.setTipo(MTypes.SEND_AMIGOS);
+        mensajeSaliente.setTipo(MTypes.SEND_AMIGOSDES);
         mensajeSaliente.setContenido(result);
         return gson.toJson(mensajeSaliente);
     }
