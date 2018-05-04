@@ -147,6 +147,10 @@ public class ProcesoJson {
                             gson.fromJson(contenido,Usuario.class)
                     );
             case RQ_LUSUARIOS:
+                    return getUsuariosAll();
+            case RQ_AMIGOS:
+                    return getAmigos();
+            case RQ_USUARIOS:
                     return getUsuarios();
             default:
                 return notFound();
@@ -429,6 +433,7 @@ public class ProcesoJson {
         if(agregar.verificarPeticion(hashTable.get(client), usuario.getId()) == 0) {
             peticion.setSolicitado(usuario.getId());
             peticion.setSolicitante(hashTable.get(client));
+            agregar.Insert(peticion);
             mensajeSaliente.setContenido(240);
             mensajeSaliente.setTipo(MTypes.ACK);
         }else{
@@ -491,8 +496,18 @@ public class ProcesoJson {
     
     public String olvidarAmigo (Amigo amistad) {
         Comunicacion mensajeSaliente = new Comunicacion();
-        AmigosController relacionAmigos = new AmigosController();       
-        if(relacionAmigos.Delete(amistad) == 1) {
+        AmigosController relacionAmigos = new AmigosController();
+        List<Amigo> amigos = relacionAmigos.Select();
+        
+        int id = hashTable.get(client);
+        Amigo oldAmistad = new Amigo();
+        for(Amigo amigo:amigos){
+            if(amigo.getAmigo1()==amistad.getAmigo1()&&amigo.getAmigo2()==id)
+                oldAmistad=amigo;
+            if(amigo.getAmigo2()==amistad.getAmigo1()&&amigo.getAmigo1()==id)
+                oldAmistad=amigo;
+        }        
+        if(relacionAmigos.Delete(oldAmistad) == 1) {
             mensajeSaliente.setContenido(242);
             mensajeSaliente.setTipo(MTypes.ACK);
         } else {
@@ -506,26 +521,24 @@ public class ProcesoJson {
         Comunicacion mensajeSaliente = new Comunicacion();
         AmigosController amigosController = new AmigosController();
         int id = this.hashTable.get(client);
+        int idUsr = amistad.getAmigo1();
         
         List<Amigo> amigos = amigosController.Select();
         Amigo oldAmistad = new Amigo();
         for(Amigo amigo:amigos){
-            if(amigo.getId()==amistad.getId()){
+            if(amigo.getAmigo1()==id && amigo.getAmigo2()==idUsr){
                 oldAmistad=amigo;
+                oldAmistad.setApodo2(amistad.getApodo1());
                 break;
             }
-        }
-        if(amistad.getAmigo1()== -1){
-            amistad.setAmigo1(id);
-            amistad.setApodo1(oldAmistad.getApodo1());
-        }
-        else if(amistad.getAmigo2()==-1){
-            amistad.setAmigo2(id);
-            amistad.setApodo2(oldAmistad.getApodo2());
-        }
+            if(amigo.getAmigo1()==idUsr && amigo.getAmigo2()==id){
+                oldAmistad=amigo;
+                oldAmistad.setApodo1(amistad.getApodo1());
+                break;
+            }
+        }        
         
-        
-        if (amigosController.Update(amistad) == 1) {
+        if (amigosController.Update(oldAmistad) == 1) {
             mensajeSaliente.setContenido(243);
             mensajeSaliente.setTipo(MTypes.ACK);
         } else {
@@ -701,7 +714,7 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
    
-    public String getUsuarios(){
+    public String getUsuariosAll(){
         UsuariosController usuariosController = new UsuariosController();
         Comunicacion mensajeSaliente = new Comunicacion();
         List<Usuario> usuarios = usuariosController.Select();
@@ -766,6 +779,75 @@ public class ProcesoJson {
             }
         }
         mensajeSaliente.setTipo(MTypes.SEND_AMIGOSDES);
+        mensajeSaliente.setContenido(result);
+        return gson.toJson(mensajeSaliente);
+    }
+    
+    public String getAmigos(){
+        Comunicacion mensajeSaliente = new Comunicacion();
+        AmigosController amigosController = new AmigosController();
+        List<Amigo> amigos = amigosController.Select();
+        List<Amigo> result = new ArrayList<>();
+        
+        mensajeSaliente.setTipo(MTypes.SEND_AMIGOS);
+        int id = hashTable.get(client);
+        for (Amigo amigo:amigos){
+            if(amigo.getAmigo1()==id){
+                amigo.setAmigo1(-1);
+                result.add(amigo);
+            }else if(amigo.getAmigo2()==id){
+                amigo.setAmigo2(-1);
+                result.add(amigo);
+            }
+        }
+        mensajeSaliente.setContenido(result);
+        return gson.toJson(mensajeSaliente);
+    }
+    
+    public String getUsuarios(){
+        Comunicacion mensajeSaliente = new Comunicacion();
+        UsuariosController usuariosController = new UsuariosController();
+        PetAmigosController petAmigoController = new PetAmigosController();
+        AmigosController amigosController = new AmigosController();
+        List<Usuario> usuarios = usuariosController.Select();
+        List<Usuario> result = new ArrayList<>();
+        List<Integer> idUsuario = new ArrayList<>();
+        List<PetAmigo> petAmigos = petAmigoController.Select();
+        List<Amigo> amigos = amigosController.Select();
+        boolean cont;
+        
+        mensajeSaliente.setTipo(MTypes.SEND_USUARIOS);
+        int id=hashTable.get(client);
+        for(PetAmigo petAmigo:petAmigos){
+            if(petAmigo.getSolicitado()==id)
+                idUsuario.add(petAmigo.getSolicitante());
+            else if(petAmigo.getSolicitante()==id)
+                idUsuario.add(petAmigo.getSolicitado());
+        }
+        
+        for(Amigo amigo:amigos){
+            if(amigo.getAmigo1()==id)
+                idUsuario.add(amigo.getAmigo2());
+            else if(amigo.getAmigo2()==id)
+                idUsuario.add(amigo.getAmigo1());
+        }
+        
+        for(Usuario usuario: usuarios){
+            if(isConectado(usuario.getId())== null){
+                cont = false;
+                for(Integer idUsr:idUsuario){
+                    if(idUsr == usuario.getId()){
+                        cont = true;
+                        break;
+                    }
+                }
+                if(cont == false){
+                    usuario.setPassword(" ");
+                    result.add(usuario);
+                }
+                
+            }
+        }
         mensajeSaliente.setContenido(result);
         return gson.toJson(mensajeSaliente);
     }

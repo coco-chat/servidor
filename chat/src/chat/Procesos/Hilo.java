@@ -58,13 +58,13 @@ public class Hilo implements Runnable{
                         data
                 );
                 data = procesador.procesar(data);
+                writer.writeUTF(data);
                 ConsoleInfo.accion(
                         id, 
                         "Enviado", 
                         client.getRemoteSocketAddress().toString(), 
                         data
                 );
-                writer.writeUTF(data);
             } catch (IOException ex){
                 if(hashTable.get(this)!=null){
                     procesador.logout();
