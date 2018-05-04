@@ -351,9 +351,9 @@ public class ProcesoJson {
                         
             //Los mensajes de grupos que recibir
             for (String gpSmsOnStr : mensajesPorRecibir) {
-                MensajeGrupo smsParaAñadir = new MensajeGrupo();
-                smsParaAñadir = gson.fromJson(gpSmsOnStr, MensajeGrupo.class);
-                smsPorRecibir.add(smsParaAñadir);
+                MensajeGrupo smsParaAdd = new MensajeGrupo();
+                smsParaAdd = gson.fromJson(gpSmsOnStr, MensajeGrupo.class);
+                smsPorRecibir.add(smsParaAdd);
             }
             
             //Verificamos si hay mensajes por enviar
