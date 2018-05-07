@@ -5,8 +5,8 @@
  */
 package chat;
 
-import chat.Procesos.Hilo;
-import chat.Procesos.ConsoleInfo;
+import chat.Process.Hilo;
+import chat.Process.ConsoleInfo;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
