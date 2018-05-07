@@ -85,11 +85,11 @@ public class ProcesoJson {
             case RQGRUPOS_UPDATE: return gruposUpdate(contenido);
             
             case RQUSUARIOS_GETALL: return usuariosGetAll();
-            case RQ_CONECTADOS: return usuariosGetConectados();
-            case RQ_DESCONECTADOS: return usuariosGetDesconectados();
+            case RQUSUARIOS_CONECTADOS: return usuariosGetConectados();
+            case RQUSUARIOS_DESCONECTADOS: return usuariosGetDesconectados();
             
-            case RQ_MENSAJE: return mensajesSendPersonal(contenido);
-            case RQ_MENSAJE_GRUPO: return mensajesSendGrupo(contenido);
+            case RQMENSAJES_SENDPERSONAL: return mensajesSendPersonal(contenido);
+            case RQMENSAJES_SENDGRUPO: return mensajesSendGrupo(contenido);
             
             case RQ_LOGOUT: return logout();
                 
@@ -286,7 +286,7 @@ public class ProcesoJson {
     }
     
     public String gruposDelete(String contenido) {
-        Integrante integrante = new Integrante();
+        Integrante integrante = gson.fromJson(contenido, Integrante.class);
         Comunicacion mensajeSaliente = new Comunicacion();
         mensajeSaliente.setTipo(MTypes.ACK);  
         if (grupos.delete(integrante) == 1)mensajeSaliente.setContenido(273);
