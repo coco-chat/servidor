@@ -70,7 +70,7 @@ public class RQAmigos {
         int idUsr = amistad.getAmigo1();
         
         List<Amigo> amigos = amigosController.Select();
-        Amigo oldAmistad;
+        Amigo oldAmistad = new Amigo();
         for(Amigo amigo:amigos){
             if(amigo.getAmigo1()==id && amigo.getAmigo2()==idUsr){
                 oldAmistad=amigo;
@@ -83,7 +83,7 @@ public class RQAmigos {
                 break;
             }
         }
-        return amigosController.Update(amistad);
+        return amigosController.Update(oldAmistad);
     }
     
     public List<Amigo> getAll(){
@@ -215,5 +215,22 @@ public class RQAmigos {
             }
         }
         return result;
+    }
+    
+    public boolean check(Usuario usuario){
+        AmigosController amigosController = new AmigosController();
+        List<Amigo> amigos = amigosController.Select();
+        List<Amigo> amigosUsuario = new ArrayList<>();
+        
+        for(Amigo amigo:amigos){
+            if(amigo.getAmigo1()==id)amigosUsuario.add(amigo);
+            if(amigo.getAmigo2()==id)amigosUsuario.add(amigo);
+        }
+        
+        for(Amigo amigo:amigosUsuario){
+            if(amigo.getAmigo1()==usuario.getId())return true;
+            if(amigo.getAmigo2()==usuario.getId())return true;
+        }
+        return false;
     }
 }

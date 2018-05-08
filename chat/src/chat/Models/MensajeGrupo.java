@@ -6,6 +6,7 @@
 package chat.Models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,15 +15,15 @@ import java.util.List;
  */
 public class MensajeGrupo implements Serializable {
     private Grupo grupo;
-    private List <Integer> integrantes;
-    private Mensaje mensaje;
+    private List <Usuario> integrantes;
+    private String mensaje;
     private Usuario remitente;
     
     public MensajeGrupo () {
-        this.grupo = null;
-        this.integrantes = null;
-        this.mensaje = null;
-        this.remitente = null;
+        this.grupo = new Grupo();
+        this.integrantes = new ArrayList<>();
+        this.mensaje = "";
+        this.remitente = new Usuario();
     }
 
     public Grupo getGrupo() {
@@ -33,19 +34,19 @@ public class MensajeGrupo implements Serializable {
         this.grupo = grupo;
     }
 
-    public List<Integer> getIntegrantes() {
+    public List<Usuario> getIntegrantes() {
         return integrantes;
     }
 
-    public void setIntegrantes(List<Integer> integrantes) {
+    public void setIntegrantes(List<Usuario> integrantes) {
         this.integrantes = integrantes;
     }
 
-    public Mensaje getMensaje() {
+    public String getMensaje() {
         return mensaje;
     }
 
-    public void setMensaje(Mensaje mensaje) {
+    public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
     }
 

@@ -5,8 +5,10 @@
  */
 package chat.Process;
 
+import chat.Models.Usuario;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -27,15 +29,17 @@ public class Hilo implements Runnable{
     private int id;
     private HashMap<Hilo, Integer> hashTable;
     private ProcesoJson procesador;
+    private File file;
 
     public Hilo() {
     }
     
-    public Hilo(int id, Socket client, HashMap<Hilo, Integer> hashTable){
+    public Hilo(int id, Socket client, HashMap<Hilo, Integer> hashTable, File file){
         this.client = client;
         this.id = id;
         this.hashTable = hashTable;
-        procesador = new ProcesoJson(hashTable, this);
+        this.file = file;
+        procesador = new ProcesoJson(hashTable, this, file);
         try {
             reader = new DataInputStream(this.client.getInputStream());
             writer = new DataOutputStream(this.client.getOutputStream());
@@ -112,4 +116,7 @@ public class Hilo implements Runnable{
         }
     }
     
+    public void checkConnectUsuario(String contenido){
+        enviarMensaje(procesador.amigosCheck(contenido));
+    }
 }

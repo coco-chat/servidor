@@ -46,7 +46,7 @@ public class RQGrupos {
         integrante.setUsuario(id);
         integrantesController.Insert(integrante);
         for(PetGrupo pet: grupo.getIntegrantes()){
-            pet.setGrupo(id);
+            pet.setGrupo(idGrupo);
             if(petGrupos.Insert(pet)==-1)return -1;
         }
         return idGrupo;
@@ -101,6 +101,7 @@ public class RQGrupos {
         List<Integer> idUsuarios = new ArrayList<>();
         List<Usuario> usuarios = usuariosController.Select();
         List<Usuario> noMiembros = new ArrayList<>();
+        Usuario usuarioAdd;
         boolean flag;
      
         IntegrantesController integrantes = new IntegrantesController();
@@ -112,10 +113,11 @@ public class RQGrupos {
         
         for(Integrante integrante: integranteLista){
             if(integrante.getGrupo() == idGrupo){
-                Usuario usuario = new Usuario();
-                usuario = usuariosController.getUsuario(integrante.getUsuario());
-                miembros.add(usuario);
-                idUsuarios.add(usuario.getId());
+                if(integrante.getUsuario()!=id){
+                    usuarioAdd = usuariosController.getUsuario(integrante.getUsuario());
+                    miembros.add(usuarioAdd);
+                    idUsuarios.add(usuarioAdd.getId());
+                }
             }
         }
         
@@ -170,6 +172,7 @@ public class RQGrupos {
         
         for(Grupo grupo:gruposAll){
             for(Integer idUsuario:idsGrupo){
+                if(grupo.getAdmin()==id)grupo.setAdmin(-1);
                 if(grupo.getId()==idUsuario)result.add(grupo);
             }
         }

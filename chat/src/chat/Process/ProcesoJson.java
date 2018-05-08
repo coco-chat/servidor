@@ -16,6 +16,7 @@ import chat.Models.Integrante;
 import chat.Models.MensajeGrupo;
 import chat.Models.NuevoGrupo;
 import chat.Models.PetGrupo;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ public class ProcesoJson {
     private final Gson gson = new Gson();
     private final HashMap<Hilo, Integer> hashTable;
     private final Hilo client;
+    private final File file;
     private int id;
     private RQAmigos amigos;
     private RQCuenta cuenta;
@@ -43,11 +45,13 @@ public class ProcesoJson {
         grupos = new RQGrupos();
         usuarios = new RQUsuarios();
         mensajes = new RQMensajes();
+        this.file = null;
     }    
     
-    public ProcesoJson(HashMap<Hilo, Integer>  hashTable, Hilo client){
+    public ProcesoJson(HashMap<Hilo, Integer>  hashTable, Hilo client, File file){
         this.hashTable = hashTable;
         this.client = client;
+        this.file = file;
         amigos = new RQAmigos();
         cuenta = new RQCuenta();
         grupos = new RQGrupos();
@@ -93,10 +97,11 @@ public class ProcesoJson {
             
             case RQ_LOGOUT: return logout();
                 
-            case RQ_MENSAJES_GRUPO_NO_RECIBIDOS:
+            /*case RQ_MENSAJES_GRUPO_NO_RECIBIDOS:
                     return enviarMensajesIntegranteGrupo(
                             gson.fromJson(contenido,Usuario.class)
                     );
+            */
             default:
                 return notFound();
         }
@@ -104,6 +109,11 @@ public class ProcesoJson {
     
     // Gracias Vanya <3
     
+    /*
+    --------------------
+    |SIN CLASE EXTERNA |
+    --------------------
+    */
     private String notFound(){
         Comunicacion mensajeSaliente = new Comunicacion();
         mensajeSaliente.setTipo(MTypes.ACK);
@@ -143,8 +153,35 @@ public class ProcesoJson {
         }
     }
     
+    public void usuarioConnect(){
+        Usuario usuario = new Usuario();
+        usuario.setId(id);
+        Hilo hilo;
+        for(Object val : hashTable.entrySet()){
+            Map.Entry entry = (Map.Entry) val;
+            if(!entry.getKey().equals(client)){
+                hilo = (Hilo)entry.getKey();
+                hilo.checkConnectUsuario(gson.toJson(usuario));
+            }
+        }
+    }
     
-        
+    public void initialize(int id){
+        hashTable.put(this.client,id);
+        this.id = id;
+        this.usuarioConnect();
+        this.amigos = new RQAmigos(id);
+        this.usuarios = new RQUsuarios(id);
+        this.grupos = new RQGrupos(id);
+        this.mensajes = new RQMensajes(id);
+    }
+         
+    
+    /*
+    --------------------
+    |     CUENTA       |
+    --------------------
+    */
     private String cuentaLogin(String contenido){
         Usuario usuario= gson.fromJson(contenido,Usuario.class);
         Comunicacion mensajeSaliente = new Comunicacion();
@@ -155,12 +192,7 @@ public class ProcesoJson {
             client.closeSocket();
         }else{
             mensajeSaliente.setContenido(210);
-            this.hashTable.put(client, result);
-            this.id = result;
-            this.amigos = new RQAmigos(id);
-            this.usuarios = new RQUsuarios(id);
-            this.grupos = new RQGrupos(id);
-            this.mensajes = new RQMensajes(id);
+            this.initialize(result);
         }
         return gson.toJson(mensajeSaliente);
     }
@@ -174,13 +206,18 @@ public class ProcesoJson {
             mensajeSaliente.setContenido(420);    
         }else{
             mensajeSaliente.setContenido(220);
-            hashTable.put(this.client,result);
+            this.initialize(result);
         }
         return gson.toJson(mensajeSaliente);
     }
     
     
     
+    /*
+    --------------------
+    |     AMIGOS       |
+    --------------------
+    */
     private String amigosAdd(String contenido){
         Usuario usuario = gson.fromJson(contenido, Usuario.class);
         Comunicacion mensajeSaliente = new Comunicacion();
@@ -255,8 +292,23 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
     
+    public String amigosCheck(String contenido){
+        Usuario usuario = gson.fromJson(contenido, Usuario.class);
+        Comunicacion mensajeSaliente = new Comunicacion();
+        mensajeSaliente.setContenido(usuario);
+        if(amigos.check(usuario))
+            mensajeSaliente.setTipo(MTypes.SENDAMIGO_CONECTADO);
+        else mensajeSaliente.setTipo(MTypes.SENDUSUARIO_CONECTADO);
+        return gson.toJson(mensajeSaliente);
+    }
     
     
+    
+    /*
+    --------------------
+    |     GRUPOS       |
+    --------------------
+    */
     public String gruposCreate(String contenido){
         NuevoGrupo nuevoGrupo = gson.fromJson(contenido, NuevoGrupo.class);
         Comunicacion mensajeSaliente = new Comunicacion();
@@ -327,6 +379,11 @@ public class ProcesoJson {
     
     
     
+    /*
+    --------------------
+    |    USUARIOS      |
+    --------------------
+    */
     public String usuariosGetAll(){
         Comunicacion mensajeSaliente = new Comunicacion();
         mensajeSaliente.setTipo(MTypes.SEND_LUSUARIOS);
@@ -349,7 +406,11 @@ public class ProcesoJson {
     }
      
      
-     
+    /*
+    --------------------
+    |   MENSAJES       |
+    --------------------
+    */ 
     public String mensajesSendPersonal(String contenido){
         Mensaje mensaje = gson.fromJson(contenido, Mensaje.class);
         Comunicacion mensajeSaliente = new Comunicacion();
@@ -364,13 +425,14 @@ public class ProcesoJson {
         MensajeGrupo mensaje = gson.fromJson(contenido, MensajeGrupo.class);
         Comunicacion mensajeSaliente = new Comunicacion();
         mensajeSaliente.setTipo(MTypes.ACK);
-        if (mensajes.sendGrupo(mensaje,this)==-1)
+        if (mensajes.sendGrupo(mensaje,this,file)==-1)
             mensajeSaliente.setContenido(480);            
         else mensajeSaliente.setContenido(280);//Mensaje no almacenado ni enviado
         return gson.toJson(mensajeSaliente);
     }
     
-    public String enviarMensajesIntegranteGrupo (Usuario u) {
-         return mensajes.getGrupo(u, this);
+    public String enviarMensajesIntegranteGrupo (Usuario u, Grupo gpo) {
+         //return mensajes.getGrupo(u, this, this.file, gpo);
+         return "";
     }
 }
