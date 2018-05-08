@@ -22,26 +22,50 @@ public class Mensaje implements Serializable{
         contenido = " ";
     }
 
+    /**
+     * Obtiene el usuario que envió el mensaje
+     * @return usuario de origen
+     */
     public Usuario getOrigen() {
         return origen;
     }
 
+    /**
+     * Asigna un usuario como remitente
+     * @param origen remitente
+     */
     public void setOrigen(Usuario origen) {
         this.origen = origen;
     }
 
+    /**
+     * Obtiene el usuario destinatario
+     * @return usuario destinatario
+     */
     public Usuario getDestino() {
         return destino;
     }
 
+    /**
+     * Asigna el usuario de destino
+     * @param destino usuario destino
+     */
     public void setDestino(Usuario destino) {
         this.destino = destino;
     }
 
+    /**
+     * Obtiene el contenido del mensaje
+     * @return contenido del mensaje
+     */
     public String getContenido() {
         return contenido;
     }
 
+    /**
+     * Asigna el contenido del grupo
+     * @param contenido 
+     */
     public void setContenido(String contenido) {
         this.contenido = contenido;
     }

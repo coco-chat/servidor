@@ -21,18 +21,32 @@ import java.util.List;
 public class ArchivosController {
     private final File archivo;
     
+    
     public ArchivosController () {
         this.archivo = null;
     }
     
+    /**
+     * Crea un nuevo objeto file
+     * @param path la dirección del archivo
+     */
     public ArchivosController(String path) {
         archivo = new File(path);
     }
     
+    /**
+     * Asigna un objeto file determinado
+     * @param archivo el objeto a asignar
+     */
     public ArchivosController(File archivo){
         this.archivo=archivo;
     }
     
+    /**
+     * Añade una linea al archivo
+     * @param cad la cadena a agregar
+     * @return true si fue exitoso, false si hubo error
+     */
     public boolean writeFile(String cad) {
         synchronized(archivo) {
             try {

@@ -24,6 +24,10 @@ public class GruposController {
         this.db = new Conexion();
     }
     
+    /**
+     * Recupera la lista de todos los grupos dentro de la base de datos
+     * @return las lista de grupos
+     */
     public List<Grupo> Select(){
         try {
             Grupo grupo;
@@ -42,6 +46,11 @@ public class GruposController {
         }
     }
     
+    /**
+     * Inserta un nuevo grupo
+     * @param grupo el grupo a insertar
+     * @return el estado del insert. En caso de error -1
+     */
     public int Insert(Grupo grupo) {
         try {
             int id = this.NextId();
@@ -64,6 +73,11 @@ public class GruposController {
         }
     }
     
+    /**
+     * Actualiza un grupo
+     * @param grupo el grupo a actualizar
+     * @return el estado de la actualización. En caso de error -1
+     */
     public int Update(Grupo grupo) {
         try {
             int id = grupo.getId();
@@ -79,6 +93,11 @@ public class GruposController {
         }
     }
     
+    /**
+     * Elimina un grupo
+     * @param grupo el grupo a aliminar
+     * @return el estado de la emiliminación.En caso de error -1
+     */
     public int Delete(Grupo grupo){
         try {
             int id = grupo.getId();
@@ -89,6 +108,10 @@ public class GruposController {
         }
     }
     
+    /**
+     * Obtiene el siguiente id de la lista de amigos
+     * @return el siguiente id
+     */
     public int NextId() {
         List<Grupo> lista = this.Select();
         if(lista == null)

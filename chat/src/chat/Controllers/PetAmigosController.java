@@ -24,6 +24,10 @@ public class PetAmigosController {
         this.db = new Conexion();
     }
     
+    /**
+     * Obtiene la lista de peticiones de amigos de la base de datos
+     * @return la lista de peticiones de amigos
+     */
     public List<PetAmigo> Select() {
         try {
             PetAmigo pet_amigo;
@@ -42,6 +46,11 @@ public class PetAmigosController {
         }
     }
     
+    /**
+     * Inserta una peticion 
+     * @param pet_amigo
+     * @return el estado de la inserción. En caso de error -1
+     */
     public String Insert(PetAmigo pet_amigo) {
         try {
             int solicitante = pet_amigo.getSolicitante();
@@ -65,6 +74,11 @@ public class PetAmigosController {
         }
     }
     
+    /**
+     * Actualiza una peticion de amigo
+     * @param pet_amigo la petición a actualizar
+     * @return el estado de la actualizacion. En caso de error -1
+     */
     public int Update(PetAmigo pet_amigo) {
         try {
             String id = pet_amigo.getId();
@@ -78,6 +92,11 @@ public class PetAmigosController {
         }
     }
     
+    /**
+     * Elimina una petición de amigo
+     * @param pet_amigo la petición a eliminar
+     * @return el estado de la petición. En caso de error -1
+     */
     public int Delete(PetAmigo pet_amigo) {
         try {
             String id = pet_amigo.getId();
@@ -88,7 +107,12 @@ public class PetAmigosController {
         }
     }
     
-    // 0 -> No hay peticion, 1 -> si hay
+    /**
+     * Verifica si ya existe una petición de esos amigos
+     * @param solicitante el id del usuario solicitante
+     * @param solicitado el id del usuario solicitado
+     * @return 0 si no hay petición. 1 si hay. En caso de error -1
+     */
     public int verificarPeticion(int solicitante, int solicitado) {
         try {
             String consulta = "SELECT * FROM pet_amigos WHERE solicitante = " 

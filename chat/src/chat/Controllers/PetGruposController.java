@@ -102,6 +102,10 @@ public class PetGruposController {
         }
     }
     
+    /**
+    * Obtiene el siguiente id de la lista de amigos
+    * @return el siguiente id
+    */
     public int NextId() {
         List<PetGrupo> lista = this.Select();
         if(lista == null)

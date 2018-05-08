@@ -120,7 +120,8 @@ public class ProcesoJson {
     }
     
     public String logout(){
-        hashTable.remove(this.client);
+        synchronized(hashTable){
+        hashTable.remove(this.client);}
         client.closeSocket();
         Comunicacion mensajeSaliente = new Comunicacion();
         
@@ -131,10 +132,12 @@ public class ProcesoJson {
     }
     
     public Hilo isConectado(int id){
-        for(Object val : hashTable.entrySet()){
-            Map.Entry entry = (Map.Entry) val;
-            if((int)entry.getValue() == id){
-                return (Hilo)entry.getKey();
+        synchronized(hashTable){
+            for(Object val : hashTable.entrySet()){
+                Map.Entry entry = (Map.Entry) val;
+                if((int)entry.getValue() == id){
+                    return (Hilo)entry.getKey();
+                }
             }
         }
         return null;

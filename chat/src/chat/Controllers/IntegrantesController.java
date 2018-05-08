@@ -24,6 +24,10 @@ public class IntegrantesController {
         this.db = new Conexion();
     }
     
+    /**
+     * Obtiene todos los integrantes de la base de datos
+     * @return la lista de integrantes
+     */
     public List<Integrante> Select(){
         try {
             Integrante integrante;
@@ -42,6 +46,11 @@ public class IntegrantesController {
         }
     }
     
+    /**
+     * Agrega un integrante a la base de datos
+     * @param integrante el integrante a agregar
+     * @return el estado de la insersicón. En caso de error -1
+     */
     public int Insert(Integrante integrante) {
         try {
             int id = this.NextId();
@@ -64,6 +73,11 @@ public class IntegrantesController {
         }
     }
     
+    /**
+     * Actualiza un integrante
+     * @param integrante el integrante a actualizar
+     * @return el estado de la actualización. En caso de error -1
+     */
     public int Update(Integrante integrante) {
         try {
             int id = integrante.getId();
@@ -79,6 +93,11 @@ public class IntegrantesController {
         }
     }
     
+    /**
+     * Elimina un integrante
+     * @param integrante el integrante a eliminar
+     * @return el estado de la eliminación. En caso de error -1
+     */
     public int Delete(Integrante integrante){
         try {
             int id = integrante.getId();
@@ -89,6 +108,10 @@ public class IntegrantesController {
         }
     }
     
+    /**
+     * Obtiene el siguiente id de la lista de amigos
+     * @return el siguiente id
+     */
     public int NextId() {
         List<Integrante> lista = this.Select();
         if(lista == null)
@@ -99,6 +122,11 @@ public class IntegrantesController {
         return ultimo.getId() + 1;
     }
     
+    /**
+     * Devuelve los id de los grupos a los que pertenece el usuario solicitado
+     * @param usuario el usuario solicitado
+     * @return las lista de id de grupos
+     */
     public List<Integer> getListOfGrupos(int usuario) {
         List<Integer> lista = new ArrayList<>();
         Integer x;

@@ -17,7 +17,11 @@ import java.util.HashMap;
  * @author vanya
  */
 public class Chat {
-    
+    /**
+     * Se esperan peticiones y se crea un hilo para cada conexión  y se pasan
+     * las variables que son utiliadas por todos los hilos para sincronización
+     * @param args 
+     */
     public static void main(String[] args) {
         HashMap<Hilo, Integer> hilos = new HashMap();
         File file = new File(

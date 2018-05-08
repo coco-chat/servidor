@@ -44,21 +44,33 @@ public class Comunicacion implements Serializable{
     }
 
     /**
-     *
-     * @return
+     *Obtiene el tipo de comunicación
+     * @return el tipo de comunicación
      */
     public MTypes getTipo() {
         return tipo;
     }
 
+    /**
+     * Asigna el tipo de comunicación
+     * @param type el tipo de comunicación
+     */
     public void setTipo(MTypes type) {
         this.tipo = type;
     }
-
+    
+    /**
+     * Obtiene el contenido de la comunicación
+     * @return el contenido de la comunicación
+     */
     public Object getContenido() {
         return contenido;
     }
 
+    /**
+     * Asigna el ocntenido de la comunicación
+     * @param contenido el contenido de la comunicación
+     */
     public void setContenido(Object contenido) {
         this.contenido = contenido;
     }

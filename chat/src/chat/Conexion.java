@@ -21,10 +21,17 @@ public class Conexion {
     
     protected Connection con;
     
+    /**
+     * Devuelve la variable de la conexión
+     * @return variable de conexión
+     */
     public Connection getCon() {
         return con;
     }
     
+    /**
+     * Crea la conexión con la base de datos
+     */
     public Conexion() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -39,6 +46,11 @@ public class Conexion {
         }
     }
     
+    /**
+     * Ejecuta una consulta de select
+     * @param consulta la cadena de consulta
+     * @return el resultado de la consulta
+     */
     public ResultSet ComandoSelect(String consulta){
         try {
             PreparedStatement sql = con.prepareStatement(consulta);
@@ -48,6 +60,11 @@ public class Conexion {
         }
     }
     
+    /**
+     * Ejecuta un comando de inset, update o delete
+     * @param consulta la cadena de consulta
+     * @return el numero de filas afectadas. En caso de error retorna -1
+     */
     public int ComandoInsertUpdateDelete(String consulta){
         try {
             PreparedStatement sql = con.prepareStatement(consulta);

@@ -20,10 +20,17 @@ public class AmigosController {
     
     private Conexion db;
     
+    /**
+     * crea una nueva conexión y la asigna
+     */
     public AmigosController() {
         this.db = new Conexion();
     }
     
+    /**
+     * Obtiene todos los amigos amigos de la base de datos
+     * @return lista de amigos
+     */
     public List<Amigo> Select(){
         try {
             Amigo amigo;
@@ -44,6 +51,11 @@ public class AmigosController {
         }
     }
     
+    /**
+     * Agrega un amigo a la tabla de amigos
+     * @param amigo
+     * @return el estado de la inserción. Retorna -1 en caso de error
+     */
     public int Insert(Amigo amigo) {
         try {
             int id = this.NextId();
@@ -68,6 +80,11 @@ public class AmigosController {
         }
     }
     
+    /**
+     * Actualiza un registro de la tabla amigos
+     * @param amigo el modelo a actualizar
+     * @return el estado de la actualización. En caso de error retorna -1
+     */
     public int Update(Amigo amigo) {
         try {
             int id = amigo.getId();
@@ -87,6 +104,11 @@ public class AmigosController {
         }
     }
     
+    /**
+     * Elimina un registro de la tabla de amigos
+     * @param amigo el objeto amigo a elilminar
+     * @return el estado de la eliminación. En caso de error retorna -1
+     */
     public int Delete(Amigo amigo){
         try {
             int id = amigo.getId();
@@ -97,6 +119,10 @@ public class AmigosController {
         }
     }
     
+    /**
+     * Obtiene el siguiente id de la lista de amigos
+     * @return el siguiente id
+     */
     public int NextId() {
         List<Amigo> lista = this.Select();
         if(lista == null)

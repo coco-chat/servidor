@@ -80,6 +80,9 @@ public class Hilo implements Runnable{
         ConsoleInfo.especial("[H"+id+"]Hilo cerrado");
     }
     
+    /**
+     * Cierra la comunicación con el socket y por ende termina el hilo
+     */
     public void closeSocket(){
         try {
             this.client.close();
@@ -88,6 +91,11 @@ public class Hilo implements Runnable{
         }
     }
     
+    /**
+     * Envia un mensaje al cliente con el que está conectado
+     * @param mensaje el mensaje a enviar
+     * @return estado de envio del mensaje. En caso de error -1
+     */
     public int enviarMensaje(String mensaje){
         String ip = client.getRemoteSocketAddress().toString();
         String[] dir;
@@ -116,10 +124,18 @@ public class Hilo implements Runnable{
         }
     }
     
+    /**
+     * Comprobar si el usuario que se acaba de conectar es un amigo
+     * @param contenido el objeto json que almacena el usuario
+     */
     public void checkConnectUsuario(String contenido){
         enviarMensaje(procesador.amigosConnectCheck(contenido));
     }
     
+    /**
+    * Comprobar si el usuario que se acaba de desconectar es un amigo
+    * @param contenido el objeto json que almacena el usuario
+    */
     public void checkDisconnectUsuario(String contenido){
         enviarMensaje(procesador.amigosDisconnectCheck(contenido));
     }

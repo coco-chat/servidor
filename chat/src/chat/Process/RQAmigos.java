@@ -29,7 +29,11 @@ public class RQAmigos {
         this.id = id;
     }
     
-        
+    /**
+     * Añade un amigo aceptando la solucitud de amistad
+     * @param usuario amigo solicitado
+     * @return estado de la insercion. En caso de error -1
+     */
     public int add(Usuario usuario){
         UsuariosController usuariosController = new UsuariosController();
         PetAmigosController petController = new PetAmigosController();
@@ -59,12 +63,22 @@ public class RQAmigos {
         return result;
     }
     
+    /**
+     * Elimina un amigo
+     * @param amistad amistad a eliminar
+     * @return el estado de la eliminación. En caso de error -1
+     */
     public int delete(Amigo amistad){
         AmigosController relacionAmigos = new AmigosController();
         amistad.setId(amistad.getAmigo1());
         return relacionAmigos.Delete(amistad);
     }
     
+    /**
+     * Actualiza una amistad
+     * @param amistad la amistad a actualizar
+     * @return el estado de la actualizacion. En caso de error -1
+     */
     public int update(Amigo amistad){
         AmigosController amigosController = new AmigosController();
         int idUsr = amistad.getAmigo1();
@@ -86,6 +100,10 @@ public class RQAmigos {
         return amigosController.Update(oldAmistad);
     }
     
+    /**
+     * Obtiene los amigos del usuario específico
+     * @return lista de amigos del usuario
+     */
     public List<Amigo> getAll(){
         AmigosController amigosController = new AmigosController();
         List<Amigo> amigos = amigosController.Select();
@@ -103,6 +121,11 @@ public class RQAmigos {
         return result;
     }
     
+    /**
+     * Agregar una petición de amigo
+     * @param usuario el usuario a pedir
+     * @return el estado de la invitacion. En caso de error -1
+     */
     public int invite(Usuario usuario){
         PetAmigo peticion = new PetAmigo();
         PetAmigosController agregar = new PetAmigosController();
@@ -116,6 +139,11 @@ public class RQAmigos {
         return -1;
     }
     
+    /**
+     * Obtiene los amigos conectados
+     * @param proceso la referencia de los usuarios conectados
+     * @return lista de amigos conectados
+     */
     public List<Amigo> getConectados(ProcesoJson proceso){
         AmigosController amigosController = new AmigosController();
         List<Amigo> amigosAll = amigosController.Select();
@@ -136,6 +164,11 @@ public class RQAmigos {
         return result;
     }
     
+    /**
+     * Obtiene los amigos desconectados
+     * @param proceso la referencia de los usuarios conectados
+     * @return lista de amigos desconectados
+     */
     public List<Amigo> getDesconectados(ProcesoJson proceso){
         AmigosController amigosController = new AmigosController();
         List<Amigo> amigosAll = amigosController.Select();
@@ -156,6 +189,10 @@ public class RQAmigos {
         return result;
     }
     
+    /**
+     * Obtiene los usuarios con los que tiene una peticion de amigos
+     * @return lista de usuarios con peticiones pendientes
+     */
     public List<Usuario> getPet(){
         PetAmigosController peticionesController = new PetAmigosController();
         UsuariosController usuariosController = new UsuariosController();
@@ -173,6 +210,10 @@ public class RQAmigos {
         return solicitantes;
     }
     
+    /**
+     * Obtiene los usuarios posibles amigos
+     * @return lista de posibles amigos
+     */
     public List<Usuario> getUsuarios(){
         UsuariosController usuariosController = new UsuariosController();
         PetAmigosController petAmigoController = new PetAmigosController();
@@ -217,6 +258,11 @@ public class RQAmigos {
         return result;
     }
     
+    /**
+     * Comprueba si un usuario es un amigo
+     * @param usuario el usuario a comprobar
+     * @return true si es amigo false no lo es
+     */
     public boolean check(Usuario usuario){
         AmigosController amigosController = new AmigosController();
         List<Amigo> amigos = amigosController.Select();
@@ -234,6 +280,11 @@ public class RQAmigos {
         return false;
     }
     
+    /**
+     * Elimina una petición de amigos
+     * @param usuario el usuario para eliminar la petición
+     * @return el estado de la eliminación. En caso de erro r-1
+     */
      public int reject(Usuario usuario){
         PetAmigosController petController = new PetAmigosController();
         PetAmigo pet = new PetAmigo();

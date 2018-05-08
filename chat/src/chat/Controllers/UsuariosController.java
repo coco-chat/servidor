@@ -24,6 +24,10 @@ public class UsuariosController {
         this.db = new Conexion();
     }
     
+    /**
+     * Obtiene la lista de usuarios de la base de datos
+     * @return la lista de usuarios
+     */
     public List<Usuario> Select() {
         try{
             Usuario usuario;
@@ -42,6 +46,11 @@ public class UsuariosController {
         }
     }
     
+    /**
+     * Inserta un nuevo usuario
+     * @param usuario el usuario a insertar
+     * @return el estado de la inserción. En caso de error -1
+     */
     public int Insert(Usuario usuario) {
         try {
             int id = this.NextId();
@@ -64,6 +73,11 @@ public class UsuariosController {
         }
     }
     
+    /**
+     * Actualiza un usuario
+     * @param usuario el usuario a actualizar
+     * @return el estado de la actualización. En caso de error -1
+     */
     public int Update(Usuario usuario) {
         try {
             int id = usuario.getId();
@@ -77,6 +91,11 @@ public class UsuariosController {
         }
     }
     
+    /**
+     * Elimina un usuario
+     * @param usuario el usuario a eliminar
+     * @return el estado de la eliminación. En caso de error -1
+     */
     public int Delete(Usuario usuario) {
         try {
             int id = usuario.getId();
@@ -87,6 +106,10 @@ public class UsuariosController {
         }
     }
     
+    /**
+    * Obtiene el siguiente id de la lista de amigos
+    * @return el siguiente id
+    */
     public int NextId() {
         List<Usuario> lista = this.Select();
         if(lista == null)
@@ -97,6 +120,11 @@ public class UsuariosController {
         return ultimo.getId() + 1;
     }
     
+    /**
+     * Obtiene un usuario mediante id
+     * @param id la id a buscar
+     * @return el usuario que tiene la id correspondiente. En caso de error null
+     */
     public Usuario getUsuario(int id) {
         Usuario x = new Usuario();
         try {
