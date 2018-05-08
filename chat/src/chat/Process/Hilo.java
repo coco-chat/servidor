@@ -117,6 +117,10 @@ public class Hilo implements Runnable{
     }
     
     public void checkConnectUsuario(String contenido){
-        enviarMensaje(procesador.amigosCheck(contenido));
+        enviarMensaje(procesador.amigosConnectCheck(contenido));
+    }
+    
+    public void checkDisconnectUsuario(String contenido){
+        enviarMensaje(procesador.amigosDisconnectCheck(contenido));
     }
 }

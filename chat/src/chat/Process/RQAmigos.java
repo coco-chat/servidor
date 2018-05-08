@@ -233,4 +233,11 @@ public class RQAmigos {
         }
         return false;
     }
+    
+     public int reject(Usuario usuario){
+        PetAmigosController petController = new PetAmigosController();
+        PetAmigo pet = new PetAmigo();
+        pet.setId(usuario.getId()+"-"+id);
+        return petController.Delete(pet);
+    }
 }

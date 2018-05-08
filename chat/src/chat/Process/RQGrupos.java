@@ -78,18 +78,36 @@ public class RQGrupos {
     
     public int delete(Integrante miembro){
         IntegrantesController manejadorIntegrantesGrupo = new IntegrantesController();
+        GruposController gruposController = new GruposController();
+        PetGruposController petGruposController = new PetGruposController();
         List<Integrante> integrantes = manejadorIntegrantesGrupo.Select();
-        Integrante integranteOld = new Integrante();
+        List<Integrante> integrantesGrupo = new ArrayList<>();
+        Integrante integranteOld = null;
         
         int idGrupo = miembro.getGrupo();
         int idUsuario = miembro.getUsuario();
         
-        for(Integrante integrante:integrantes){
-            if(integrante.getGrupo()==idGrupo&&integrante.getUsuario()==idUsuario){
+        for(Integrante integrante:integrantes)
+            if(integrante.getGrupo()==idGrupo)integrantesGrupo.add(integrante);
+        
+        for(Integrante integrante:integrantesGrupo){
+            if(integrante.getUsuario()==idUsuario){
                 integranteOld=integrante;
                 break;
             }
         }
+        
+        if(integrantesGrupo.size()<=3&&integranteOld!=null){
+            for(Integrante integrante:integrantesGrupo){
+                manejadorIntegrantesGrupo.Delete(integrante);
+            }
+            for(PetGrupo petGrupo : petGruposController.Select()){
+                if(petGrupo.getGrupo()==idGrupo)
+                    petGruposController.Delete(petGrupo);
+            }
+            return gruposController.Delete(gruposController.getGrupo(idGrupo));
+        }
+        
         return manejadorIntegrantesGrupo.Delete(integranteOld);
     }
     
@@ -129,7 +147,7 @@ public class RQGrupos {
         for(Usuario usuario: usuarios){
             flag = false;
             for(Integer idUsuario:idUsuarios){
-                if(idUsuario==usuario.getId()){
+                if(idUsuario==usuario.getId() || usuario.getId()==id){
                     flag = true;
                     break;
                 }
@@ -182,5 +200,17 @@ public class RQGrupos {
     public int update(Grupo grupo){
         GruposController cambiarNombreIntermediario = new GruposController();
         return cambiarNombreIntermediario.Update(grupo);
+    }
+    
+     public int reject(Grupo grupo){
+        PetGruposController petGruposController = new PetGruposController();
+        List<PetGrupo> petGrupos = petGruposController.Select();
+        PetGrupo petGrupoOld = new PetGrupo();
+                
+        for(PetGrupo petGrupo:petGrupos){
+            if(petGrupo.getGrupo()==grupo.getId()&&petGrupo.getUsuario()==id)
+                petGrupoOld = petGrupo;
+        }
+        return petGruposController.Delete(petGrupoOld);
     }
 }

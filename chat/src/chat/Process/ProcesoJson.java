@@ -78,6 +78,7 @@ public class ProcesoJson {
             case RQAMIGOS_DESCONECTADOS: return amigosGetDesconectados();
             case RQAMIGOS_GETPET: return amigosGetPet();
             case RQAMIGOS_GETUSUARIOS: return amigosGetUsuarios();
+            case RQAMIGOS_REJECT: return amigosReject(contenido);
             
             case RQGRUPOS_CREATE: return gruposCreate(contenido);
             case RQGRUPOS_INVITE: return gruposInvite(contenido);
@@ -87,6 +88,7 @@ public class ProcesoJson {
             case RQGRUPOS_GETPET: return gruposGetPet();
             case RQGRUPOS_GETALL: return gruposGetAll();
             case RQGRUPOS_UPDATE: return gruposUpdate(contenido);
+            case RQGRUPOS_REJECT: return gruposReject(contenido);
             
             case RQUSUARIOS_GETALL: return usuariosGetAll();
             case RQUSUARIOS_CONECTADOS: return usuariosGetConectados();
@@ -94,14 +96,10 @@ public class ProcesoJson {
             
             case RQMENSAJES_SENDPERSONAL: return mensajesSendPersonal(contenido);
             case RQMENSAJES_SENDGRUPO: return mensajesSendGrupo(contenido);
+            case RQMENSAJES_GETGRUPO: return mensajesGetGrupo();
             
             case RQ_LOGOUT: return logout();
-                
-            /*case RQ_MENSAJES_GRUPO_NO_RECIBIDOS:
-                    return enviarMensajesIntegranteGrupo(
-                            gson.fromJson(contenido,Usuario.class)
-                    );
-            */
+            
             default:
                 return notFound();
         }
@@ -128,7 +126,7 @@ public class ProcesoJson {
         
         mensajeSaliente.setContenido(230);
         mensajeSaliente.setTipo(MTypes.ACK);
-        
+        usuarioDisconnect();
         return gson.toJson(mensajeSaliente);
     }
     
@@ -162,6 +160,19 @@ public class ProcesoJson {
             if(!entry.getKey().equals(client)){
                 hilo = (Hilo)entry.getKey();
                 hilo.checkConnectUsuario(gson.toJson(usuario));
+            }
+        }
+    }
+    
+    public void usuarioDisconnect(){
+        Usuario usuario = new Usuario();
+        usuario.setId(id);
+        Hilo hilo;
+        for(Object val : hashTable.entrySet()){
+            Map.Entry entry = (Map.Entry) val;
+            if(!entry.getKey().equals(client)){
+                hilo = (Hilo)entry.getKey();
+                hilo.checkDisconnectUsuario(gson.toJson(usuario));
             }
         }
     }
@@ -292,7 +303,7 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
     
-    public String amigosCheck(String contenido){
+    public String amigosConnectCheck(String contenido){
         Usuario usuario = gson.fromJson(contenido, Usuario.class);
         Comunicacion mensajeSaliente = new Comunicacion();
         mensajeSaliente.setContenido(usuario);
@@ -302,6 +313,24 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
     
+    public String amigosDisconnectCheck(String contenido){
+        Usuario usuario = gson.fromJson(contenido, Usuario.class);
+        Comunicacion mensajeSaliente = new Comunicacion();
+        mensajeSaliente.setContenido(usuario);
+        if(amigos.check(usuario))
+            mensajeSaliente.setTipo(MTypes.SENDAMIGO_DESCONECTADO);
+        else mensajeSaliente.setTipo(MTypes.SENDUSUARIO_DESCONECTADO);
+        return gson.toJson(mensajeSaliente);
+    }
+    
+    public String amigosReject(String contenido){
+        Usuario usuario = gson.fromJson(contenido, Usuario.class);
+        Comunicacion mensajeSaliente = new Comunicacion();
+        mensajeSaliente.setTipo(MTypes.ACK);
+        if(amigos.reject(usuario)==-1)mensajeSaliente.setContenido(490);
+        else mensajeSaliente.setContenido(290);
+        return gson.toJson(mensajeSaliente);
+    }
     
     
     /*
@@ -377,6 +406,15 @@ public class ProcesoJson {
         return gson.toJson(mensajeSaliente);
     }
     
+    public String gruposReject (String contenido){
+        Grupo grupo = gson.fromJson(contenido, Grupo.class);
+        Comunicacion mensajeSaliente = new Comunicacion();
+        mensajeSaliente.setTipo(MTypes.ACK);
+        if(grupos.reject(grupo)==-1)mensajeSaliente.setContenido(490);
+        else mensajeSaliente.setContenido(290);
+        return gson.toJson(mensajeSaliente);
+    }
+    
     
     
     /*
@@ -434,5 +472,12 @@ public class ProcesoJson {
     public String enviarMensajesIntegranteGrupo (Usuario u, Grupo gpo) {
          //return mensajes.getGrupo(u, this, this.file, gpo);
          return "";
+    }
+    
+    public String mensajesGetGrupo(){
+        Comunicacion mensajeSaliente = new Comunicacion();
+        mensajeSaliente.setTipo(MTypes.SEND_MENSAJES_GRUPOS);
+        mensajeSaliente.setContenido(mensajes.getGrupoAll(this.file));
+        return gson.toJson(mensajeSaliente);
     }
 }

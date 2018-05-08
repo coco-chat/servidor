@@ -140,4 +140,40 @@ public class RQMensajes {
             return hilo.enviarMensaje(gson.toJson(mensajeSalida));
         }return -1;
     }
+    
+    public List<MensajeGrupo> getGrupoAll(File file){
+        ArchivosController archivosController = new ArchivosController(file);
+        List<String> mensajes = archivosController.readFile();
+        List<MensajeGrupo> mensajesGrupo = new ArrayList<>();
+        List<MensajeGrupo> result = new ArrayList<>();
+        List<Usuario> save;
+        MensajeGrupo mensajeGrupo;
+        MensajeGrupo auxiliar;
+        Gson gson = new Gson();
+        
+        for(String mensaje:mensajes){
+            mensajeGrupo = gson.fromJson(mensaje, MensajeGrupo.class);
+            
+            save = new ArrayList<>();
+            for(Usuario integrante:mensajeGrupo.getIntegrantes()){
+                if(integrante.getId()==id){
+                    auxiliar = gson.fromJson(mensaje, MensajeGrupo.class);
+                    auxiliar.setIntegrantes(new ArrayList<>());
+                    result.add(auxiliar);
+                    break;
+                }else save.add(integrante);
+            }
+            mensajeGrupo.setIntegrantes(save);
+            if(mensajeGrupo.getIntegrantes().size()>0)
+                mensajesGrupo.add(mensajeGrupo);
+        }
+        
+        mensajes = new ArrayList<>();
+        for(MensajeGrupo mensaje: mensajesGrupo){
+            mensajes.add(gson.toJson(mensaje));
+        }
+        archivosController.overwriteFile(mensajes);
+        
+        return result;
+    }
 }

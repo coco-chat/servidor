@@ -15,3 +15,4 @@
 {"grupo":{"id":4,"admin":-1,"nombre":" "},"integrantes":[{"id":-1,"username":" ","password":" "},{"id":3,"username":"emi","password":" "}],"mensaje":"Hola a todos","remitente":{"id":2,"username":"wero","password":"40bd001563085fc35165329ea1ff5c5ecbdbbeef"}}
 {"grupo":{"id":4,"admin":-1,"nombre":" "},"integrantes":[{"id":3,"username":"emi","password":" "},{"id":3,"username":"emi","password":" "}],"mensaje":"Arre lulu","remitente":{"id":1,"username":"juan","password":"40bd001563085fc35165329ea1ff5c5ecbdbbeef"}}
 {"grupo":{"id":4,"admin":-1,"nombre":" "},"integrantes":[{"id":3,"username":"emi","password":" "}],"mensaje":"no mames si jala","remitente":{"id":9,"username":"Kevin","password":"40bd001563085fc35165329ea1ff5c5ecbdbbeef"}}
+{"grupo":{"id":4,"admin":-1,"nombre":" "},"integrantes":[{"id":-1,"username":" ","password":" "}],"mensaje":"hola","remitente":{"id":1,"username":"wero","password":"40bd001563085fc35165329ea1ff5c5ecbdbbeef"}}
